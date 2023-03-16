@@ -46,7 +46,7 @@ Every team member has a personal branch that they can commit to at all times. Th
 If you are working on a feature with another team member, use a feature branch to collaborate, e.g. `feature/most-active-contributor-statistic`. Both you and the team member can merge your personal branches into this feature branch, and then collaborate on the feature branch, optionally committing to it directly.
 
 #### Assignment branches
-Whenever some scope of work has been completed, create a pull request from your personal branch (or your feature branch) to an assignment branch and request a review from all team members. 
+Whenever some scope of work has been completed, create a pull request from your personal branch (or your feature branch) to an assignment branch and request a review from all team members. In order to merge a pull request into an assignment branch, you need **at least one** review from a fellow team member, but for large features involving core aspects of the application, it is recommended to have more reviews.
 Never commit to an assignment branch directly.
 
 #### The main branch
