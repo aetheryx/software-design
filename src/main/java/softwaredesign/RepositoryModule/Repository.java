@@ -1,7 +1,11 @@
 package softwaredesign.RepositoryModule;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.io.File;
+import java.util.Map;
 
 /**
  * @author Joachim
@@ -26,6 +30,10 @@ import java.util.List;
  *  </p>
  */
 public class Repository {
+    private static final String filePath = "./Clonedrepository/";
+    private Map<String, Branch> branches = new HashMap<>();
+    private String gitHubURL;
+    private String name;
     /**
      * @author Joachim
      * This method creates an instance of Repository, clones it, and initiates the default branch (main or master) after which the
@@ -38,14 +46,31 @@ public class Repository {
      * </p>
      * <p>
      *     This method <strong>CAN FAIL</strong> however. When no internet is available for example, or the repository
-     *     does not exist. In this case, the Repository tries to destroy itself but I don't know how I am going to
-     *     implement this as a developer yet.
+     *     does not exist. In this case, the Repository should be destroyed
      * </p>
      * <P>
      *     @param gitHubURL the link to the GitHub repository to be investigated by the user.
      * </P>
      */
-    public Repository(String gitHubURL){
+    private void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
+        //build the process and redirect the error and input stream additional to running
+        ProcessBuilder gitCloneProcessBuilder = new ProcessBuilder(command.split(" "));
+        gitCloneProcessBuilder.directory(new File(workingDir));
+        gitCloneProcessBuilder.redirectErrorStream(true);
+        gitCloneProcessBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+
+        Process gitCloneProcess = gitCloneProcessBuilder.start();
+        gitCloneProcess.waitFor(); //waits for the process to complete
+    }
+    public Repository(String newGitHubURL) throws IOException, InterruptedException {
+        delete(); //make sure the folder is empty.
+        gitHubURL = newGitHubURL;
+
+        String cloneCommand = "git clone --progress " + gitHubURL;
+        runGitCommand(cloneCommand, filePath);
+        File cloneDir = new File(filePath);
+        name = cloneDir.list()[0];
+        return;
 
     }
 
@@ -57,10 +82,10 @@ public class Repository {
      * </p>
      */
     public String getURL(){
-        return "";
+        return gitHubURL;
     }
     /**
-     * @author Joahcim
+     * @author Joachim
      * This method switches the branch and changes the output of<a href="#@link">{@link Repository#getCommits()}</a>.
      * <p>
      *     This method might take some time due to the git log command taking a long time. Secondly, this method
@@ -74,8 +99,11 @@ public class Repository {
      *               the default branch will be switched to.
      * </p>
      * */
-    public void switchActiveBranch(String branch){
-
+    public void switchActiveBranch(String branch) throws IOException, InterruptedException {
+        String checkoutCommand = "git checkout " + branch;
+        try {
+            runGitCommand(checkoutCommand, filePath + "/" + name);
+        }catch ()
     }
 
     /**
