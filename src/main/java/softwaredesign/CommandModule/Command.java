@@ -1,5 +1,7 @@
 package softwaredesign.CommandModule;
 
+import java.util.Map;
+
 /**
  * @author Marko
  *
@@ -9,19 +11,13 @@ package softwaredesign.CommandModule;
  */
 public abstract class Command {
 
+    private String name;
+    private ArgumentParser argumentParser;
+    abstract void run(Map<String, String> arguments);
 }
 
-class StatisticCommand extends Command {
 
 
-}
-
-class DeleteRepositoryCommand extends Command {
 
 
-}
 
-class SwitchBranchCommand extends Command {
-
-
-}
