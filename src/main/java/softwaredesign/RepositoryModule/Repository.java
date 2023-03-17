@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.io.File;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author Joachim
@@ -31,9 +32,102 @@ import java.util.Map;
  */
 public class Repository {
     private static final String filePath = "./Clonedrepository/";
+
+
+    /**
+     * @author Joachim
+     * This class is responsible for storing the commits from a gitlog and for populating these commits.
+     * <p>
+     *     populating the commits in the branch happens inside <a href="#@link">{@link Repository.Branch#processGitLog()}</a>. With
+     *     <a href="#@link">{@link Branch#getName()} the branchname can be retrieved, and
+     *     <a href="#@link">{@link Branch#getCommits()}</a></a> returns the commits inside this branch.
+     * </p>
+     */
+    public class Branch {
+        static final String gitLogCommand = "git --no-pager log ";
+        static final String gitLogNCommitsCommand = "git rev-list --count "; // use with + branchname
+        private Commit[] commits;
+        private String branchName;
+        public Branch(String newBranchName){
+            branchName = newBranchName;
+        }
+        /**
+         * @author Joachim
+         * @return a string containing the name of the branch this <a href="#@link">{@link Branch}</a> represents inside
+         * the GitHub repository
+         */
+        public String getName(){
+            return "";
+        }
+
+        /**
+         * @author Joachim
+         * This method populates this branch with commits returned by gitLog
+         * <p>
+         *  This method might take some time due to the git log command taking a long time. Secondly, this method
+         *  <strong>CAN FAIL</strong> if the branch or the internet is not available for example.
+         * </p>
+         */
+        public void processGitLog(Repository repository) throws IOException, InterruptedException {
+            //executing gitlog
+            String gitLogOutput;
+            String nCommitsCommandOutput = Repository.runGitCommand(gitLogNCommitsCommand + branchName, filePath + "/" + repository.name, true);
+            int nCommits = Integer.parseInt(nCommitsCommandOutput.substring(0, nCommitsCommandOutput.length() - 1));
+            gitLogOutput = Repository.runGitCommand(gitLogCommand, filePath + "/"+ repository.name, true);
+            //System.out.println(gitLogOutput);
+
+            //parsing git log
+            String[] unparsedCommits = new String[nCommits];
+            commits = new Commit[nCommits];
+            unparsedCommits = gitLogOutput.split("\ncommit ");
+            for (int i = 0; i < nCommits; i++){
+                String[] unparsedCommitLines = unparsedCommits[i].split("\n");
+                String currentCommitId = unparsedCommitLines[0].substring(0,40);
+
+            }
+
+        }
+
+        /**
+         * @author Joachim
+         * gets the list of commits in this branch.
+         * @return an arraylist of <a href="#@link">{@link Commit}</a> inside this <a href="#@link">{@link Branch}</a>
+         *  returns an emptyArrayList() if there are no available Commits.
+         */
+        public List<Commit> getCommits(){
+            return new ArrayList<>();
+        }
+    }
+
     private Map<String, Branch> branches = new HashMap<>();
     private String gitHubURL;
+    private String activeBranch;
     private String name;
+
+    private String getCurrentBranchName() throws IOException, InterruptedException {
+        String branchName = runGitCommand("git rev-parse --abbrev-ref HEAD", filePath + "/" + name, true);
+        return branchName;
+    }
+    private static void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
+        runGitCommand(command, workingDir, false);
+    }
+    private static String runGitCommand(String command, String workingDir, boolean readIntoString) throws IOException, InterruptedException {
+        String result = "";
+        //build the process and redirect the error and input stream additional to running
+        ProcessBuilder gitCommandBuilder = new ProcessBuilder(command.split(" "));
+        gitCommandBuilder.directory(new File(workingDir));
+        gitCommandBuilder.redirectErrorStream(true);
+        if (!readIntoString){
+            gitCommandBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        }
+
+        Process gitCommandProcess = gitCommandBuilder.start();
+        if(readIntoString){
+            result = new String(gitCommandProcess.getInputStream().readAllBytes());
+        }
+        gitCommandProcess.waitFor(); //waits for the process to complete
+        return result;
+    }
     /**
      * @author Joachim
      * This method creates an instance of Repository, clones it, and initiates the default branch (main or master) after which the
@@ -49,19 +143,9 @@ public class Repository {
      *     does not exist. In this case, the Repository should be destroyed
      * </p>
      * <P>
-     *     @param gitHubURL the link to the GitHub repository to be investigated by the user.
+     *     @param newGitHubURL the link to the GitHub repository to be investigated by the user.
      * </P>
      */
-    private void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
-        //build the process and redirect the error and input stream additional to running
-        ProcessBuilder gitCloneProcessBuilder = new ProcessBuilder(command.split(" "));
-        gitCloneProcessBuilder.directory(new File(workingDir));
-        gitCloneProcessBuilder.redirectErrorStream(true);
-        gitCloneProcessBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-
-        Process gitCloneProcess = gitCloneProcessBuilder.start();
-        gitCloneProcess.waitFor(); //waits for the process to complete
-    }
     public Repository(String newGitHubURL) throws IOException, InterruptedException {
         delete(); //make sure the folder is empty.
         gitHubURL = newGitHubURL;
@@ -70,8 +154,8 @@ public class Repository {
         runGitCommand(cloneCommand, filePath);
         File cloneDir = new File(filePath);
         name = cloneDir.list()[0];
+        activeBranch = getCurrentBranchName();
         return;
-
     }
 
     /**
@@ -101,9 +185,12 @@ public class Repository {
      * */
     public void switchActiveBranch(String branch) throws IOException, InterruptedException {
         String checkoutCommand = "git checkout " + branch;
-        try {
-            runGitCommand(checkoutCommand, filePath + "/" + name);
-        }catch ()
+        runGitCommand(checkoutCommand, filePath + "/" + name);
+        if(!branches.containsKey(branch)){
+            branches.put(branch, new Branch(branch));
+            branches.get(branch).processGitLog(this);
+        }
+        activeBranch = getCurrentBranchName();
     }
 
     /**
@@ -123,7 +210,8 @@ public class Repository {
      *     functionality of the <a href="#@link">{@link Repository}</a> class.
      * </p>
      */
-    public void delete(){
-
+    public void delete() throws IOException {
+        //method is not very deep, but it does hide the information of the repository file structure to the other classes.
+        FileUtils.cleanDirectory(new File(filePath));
     }
 }
