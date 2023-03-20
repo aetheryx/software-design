@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
+
 /**
  * @author Joachim
  *  This a class that can clone a repository, and store all of its contents in underlying classes.
@@ -128,6 +129,7 @@ public class Repository {
         gitCommandProcess.waitFor(); //waits for the process to complete
         return result;
     }
+
     /**
      * @author Joachim
      * This method creates an instance of Repository, clones it, and initiates the default branch (main or master) after which the
