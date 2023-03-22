@@ -1,6 +1,10 @@
 package softwaredesign;
 
+import softwaredesign.RepositoryModule.Commit;
 import softwaredesign.RepositoryModule.Repository;
+
+import java.io.IOException;
+
 /**
  * @author Joachim, Zain
  * This class is the main class that ties the repository and the commands together.
@@ -9,7 +13,7 @@ import softwaredesign.RepositoryModule.Repository;
  *     class (representing Git data)
  *     and the <a href = #@Link>{@link Command}</a> classes. It handles the initialisation of the <a href=#@link>{@link Repository}</a>
  *     class (by requesting input from the
- *     user) (see also for more details: description of the Repository). It also acts as the main “command handler”
+ *     user) (see also for more details: description of the Repository). It also acts as the main command handler
  *     thread, requesting command input from the user, parsing it, selecting the right command class to execute, and
  *     preparing the arguments for this command class based on its argument parser (see Command class).
  * </p>
@@ -38,7 +42,7 @@ public class Application {
      * </p>
      */
     public void run(){
-
+        initialiseRepository();
     }
     /**
      * @author Joachim
@@ -47,7 +51,22 @@ public class Application {
      * after a repository has been succesfully created, it returns.
      * */
     private void initialiseRepository(){
-
+        try {
+            repository = new Repository("https://github.com/Tysab/webtech-lab37-assign");
+            repository.switchActiveBranch("joa");
+            for (Commit commit : repository.getCommits()) {
+                System.out.println("--------------------------------");
+                System.out.println(String.format("    CommitID          = %s", commit.getId()));
+                System.out.println(String.format("    CommitAuthor      = %s", commit.getAuthor()));
+                System.out.println(String.format("    CommitDescription = %s", commit.getDescription()));
+                System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
+                System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
     /**
      * @author Joachim

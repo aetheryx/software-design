@@ -14,6 +14,7 @@ public class Commit {
     private String author;
     private int diffAdded;
     private int diffRemoved;
+    private String date;
 
     /**
      * @author Joachim
@@ -22,12 +23,13 @@ public class Commit {
      * </p>
      * @returns the commit created
      */
-    public Commit(String newID, String newDescription, String newAuthor, int newDiffAdded, int newDiffRemoved){
+    public Commit(String newID, String newDescription, String newAuthor, int newDiffAdded, int newDiffRemoved, String newDate){
         id = newID;
         description = newDescription;
         author = newAuthor;
         diffAdded = newDiffAdded;
         diffRemoved = newDiffRemoved;
+        date = newDate;
     }
 
     /**
@@ -84,4 +86,5 @@ public class Commit {
     public int getDiffRemoved() {
         return diffRemoved;
     }
+
 }

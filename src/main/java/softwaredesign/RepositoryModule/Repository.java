@@ -8,6 +8,8 @@ import java.io.File;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
+
 
 /**
  * @author Joachim
@@ -32,8 +34,8 @@ import org.apache.commons.io.FileUtils;
  *  </p>
  */
 public class Repository {
-    private static final String filePath = "./Clonedrepository/";
-
+    private static final String clonePath = "./Clonedrepository/";
+    private String repositoryPath = clonePath;
 
     /**
      * @author Joachim
@@ -45,8 +47,9 @@ public class Repository {
      * </p>
      */
     public class Branch {
-        static final String gitLogCommand = "git --no-pager log ";
+        static final String gitLogCommand = "git --no-pager log --stat --word-diff=porcelain";
         static final String gitLogNCommitsCommand = "git rev-list --count "; // use with + branchname
+        static final String gitDiffCommand = "git --no-pager diff --stat "; //use with + commit + " " + otherCommit
         private Commit[] commits;
         private String branchName;
         public Branch(String newBranchName){
@@ -63,6 +66,45 @@ public class Repository {
 
         /**
          * @author Joachim
+         * <p>This function parses one raw commit from git log --stat, Commits should be split off before they are passed
+         * to this function and this function should be called seperately. This function is intended to work with
+         * <a href=#@link> {@link Repository.Branch#processGitLog(Repository)}</a></p>
+         * @param unparsedCommit the raw string of the commit in the gitlog format.
+         * @return returns an instance of commit with their values set appropriately.
+         * */
+        private Commit parseCommit(String unparsedCommit){
+            String[] unparsedCommitLines = unparsedCommit.split("\n");
+            String commitId = unparsedCommitLines[0];
+            int commitNumberOfLineDeletions = 0;
+            int commitNumberOfLineAdditions = 0;
+
+            int j = 1; //represents the current line to be parsed.
+            if (unparsedCommitLines[j].startsWith("Merge: ")){
+                j++;
+            }
+            String commitAuthorName = unparsedCommitLines[j].substring(8);
+            j++;
+            String commitDate = unparsedCommitLines[j].substring(8);
+            j += 2;
+            String commitDescription = unparsedCommitLines[j].substring(4);
+
+            //now for the line additions and removals
+            String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
+            for (String change : commitChanges) {
+                String number = change.split(" ")[0];
+                if (change.contains("-")){
+                    //deletion
+                    commitNumberOfLineDeletions = Integer.parseInt(number);
+                } else if (change.contains("+")) {
+                    //addition
+                    commitNumberOfLineAdditions = Integer.parseInt(number);
+                }
+            }
+            return new Commit(commitId, commitDescription, commitAuthorName, commitNumberOfLineAdditions,commitNumberOfLineDeletions, commitDate);
+        }
+
+        /**
+         * @author Joachim
          * This method populates this branch with commits returned by gitLog
          * <p>
          *  This method might take some time due to the git log command taking a long time. Secondly, this method
@@ -72,21 +114,20 @@ public class Repository {
         public void processGitLog(Repository repository) throws IOException, InterruptedException {
             //executing gitlog
             String gitLogOutput;
-            String nCommitsCommandOutput = Repository.runGitCommand(gitLogNCommitsCommand + branchName, filePath + "/" + repository.name, true);
+
+            String nCommitsCommandOutput = Repository.runGitCommand(gitLogNCommitsCommand + branchName, repository.repositoryPath, true);
             int nCommits = Integer.parseInt(nCommitsCommandOutput.substring(0, nCommitsCommandOutput.length() - 1));
-            gitLogOutput = Repository.runGitCommand(gitLogCommand, filePath + "/"+ repository.name, true);
+            gitLogOutput = Repository.runGitCommand(gitLogCommand, repository.repositoryPath, true);
             //System.out.println(gitLogOutput);
 
             //parsing git log
             String[] unparsedCommits = new String[nCommits];
             commits = new Commit[nCommits];
             unparsedCommits = gitLogOutput.split("\ncommit ");
+
             for (int i = 0; i < nCommits; i++){
-                String[] unparsedCommitLines = unparsedCommits[i].split("\n");
-                String currentCommitId = unparsedCommitLines[0].substring(0,40);
-
+                commits[i] = parseCommit(unparsedCommits[i]);
             }
-
         }
 
         /**
@@ -106,7 +147,7 @@ public class Repository {
     private String name;
 
     private String getCurrentBranchName() throws IOException, InterruptedException {
-        String branchName = runGitCommand("git rev-parse --abbrev-ref HEAD", filePath + "/" + name, true);
+        String branchName = runGitCommand("git rev-parse --abbrev-ref HEAD", repositoryPath, true).replace("\n","");
         return branchName;
     }
     private static void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
@@ -153,9 +194,10 @@ public class Repository {
         gitHubURL = newGitHubURL;
 
         String cloneCommand = "git clone --progress " + gitHubURL;
-        runGitCommand(cloneCommand, filePath);
-        File cloneDir = new File(filePath);
+        runGitCommand(cloneCommand, clonePath);
+        File cloneDir = new File(clonePath);
         name = cloneDir.list()[0];
+        repositoryPath = clonePath + "/" + name;
         activeBranch = getCurrentBranchName();
         return;
     }
@@ -187,7 +229,7 @@ public class Repository {
      * */
     public void switchActiveBranch(String branch) throws IOException, InterruptedException {
         String checkoutCommand = "git checkout " + branch;
-        runGitCommand(checkoutCommand, filePath + "/" + name);
+        runGitCommand(checkoutCommand, repositoryPath);
         if(!branches.containsKey(branch)){
             branches.put(branch, new Branch(branch));
             branches.get(branch).processGitLog(this);
@@ -201,9 +243,11 @@ public class Repository {
      * @return a list of <a href="#@link">{@link Commit}</a>
      *
      */
-    public List<Commit> getCommits(){
-        return new ArrayList<>();
+    public List<Commit> getCommits()
+    {
+        return List.of(branches.get(activeBranch).commits);
     }
+
     /**
      * @author Joachim
      * removes the repository from disk, by cleaning out <strong>THE ENTIRE FOLDER</strong>
@@ -214,6 +258,6 @@ public class Repository {
      */
     public void delete() throws IOException {
         //method is not very deep, but it does hide the information of the repository file structure to the other classes.
-        FileUtils.cleanDirectory(new File(filePath));
+        FileUtils.cleanDirectory(new File(clonePath));
     }
 }
