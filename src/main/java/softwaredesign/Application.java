@@ -1,6 +1,10 @@
 package softwaredesign;
 
+import softwaredesign.RepositoryModule.Commit;
 import softwaredesign.RepositoryModule.Repository;
+
+import java.io.IOException;
+
 /**
  * @author Joachim, Zain
  * This class is the main class that ties the repository and the commands together.
@@ -38,7 +42,7 @@ public class Application {
      * </p>
      */
     public void run(){
-
+        initialiseRepository();
     }
     /**
      * @author Joachim
@@ -47,7 +51,20 @@ public class Application {
      * after a repository has been succesfully created, it returns.
      * */
     private void initialiseRepository(){
-
+        try {
+            repository = new Repository("https://github.com/Tysab/webtech-lab37-assign");
+            repository.switchActiveBranch("joa");
+            for (Commit commit : repository.getCommits()) {
+                System.out.println("--------------------------------");
+                System.out.println(String.format("    CommitID          = %s", commit.getId()));
+                System.out.println(String.format("    CommitAuthor      = %s", commit.getAuthor()));
+                System.out.println(String.format("    CommitDescription = %s", commit.getDescription()));
+                System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
+                System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
     /**
      * @author Joachim
