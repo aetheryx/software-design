@@ -10,7 +10,6 @@ import org.apache.commons.io.FileUtils;
 
 
 /**
- * @author Joachim
  *  This a class that can clone a repository, and store all of its contents in underlying classes.
  *  <p>
  *      The creation of a Repository using the constructor <a href=#@link>{@link Repository()}</a> using an url,
@@ -30,6 +29,7 @@ import org.apache.commons.io.FileUtils;
  *       Before destroying this class, one might want to call <a href="#@link">{@link Repository#delete()}</a> to actually
  *       delete the repository from the disk and free up space.
  *  </p>
+ *  @author Joachim
  */
 public class Repository {
     private static final String clonePath = "./ClonedRepository/";
@@ -37,13 +37,13 @@ public class Repository {
     private String repositoryPath;
 
     /**
-     * @author Joachim
      * This class is responsible for storing the commits from a gitlog and for populating these commits.
      * <p>
      *     populating the commits in the branch happens inside <a href="#@link">{@link Repository.Branch#processGitLog()}</a>. With
      *     <a href="#@link">{@link Branch#getName()} the branchname can be retrieved, and
      *     <a href="#@link">{@link Branch#getCommits()}</a></a> returns the commits inside this branch.
      * </p>
+     * @author Joachim
      */
     private static class Branch {
         static final String gitLogCommand = "git --no-pager log --stat --word-diff=porcelain";
@@ -54,21 +54,21 @@ public class Repository {
             branchName = newBranchName;
         }
         /**
-         * @author Joachim
          * @return a string containing the name of the branch this <a href="#@link">{@link Branch}</a> represents inside
          * the GitHub repository
+         * @author Joachim
          */
         public String getName(){
             return "";
         }
 
         /**
-         * @author Joachim
          * <p>This function parses one raw commit from git log --stat, Commits should be split off before they are passed
          * to this function and this function should be called seperately. This function is intended to work with
          * <a href=#@link> {@link Repository.Branch#processGitLog(Repository)}</a></p>
          * @param unparsedCommit the raw string of the commit in the git log format.
          * @return returns an instance of commit with their values set appropriately.
+         * @author Joachim
          * */
         private Commit parseCommit(String unparsedCommit){
             String[] unparsedCommitLines = unparsedCommit.split("\n");
@@ -102,12 +102,12 @@ public class Repository {
         }
 
         /**
-         * @author Joachim
          * This method populates this branch with commits returned by gitLog
          * <p>
          *  This method might take some time due to the git log command taking a long time. Secondly, this method
          *  <strong>CAN FAIL</strong> if the branch or the internet is not available for example.
          * </p>
+         * @author Joachim
          */
         public void processGitLog(Repository repository) throws IOException, InterruptedException {
             //executing git log
@@ -129,10 +129,10 @@ public class Repository {
         }
 
         /**
-         * @author Joachim
          * gets the list of commits in this branch.
          * @return an arraylist of <a href="#@link">{@link Commit}</a> inside this <a href="#@link">{@link Branch}</a>
          *  returns an emptyArrayList() if there are no available Commits.
+         *  @author Joachim
          */
         public List<Commit> getCommits(){
             return new ArrayList<>();
@@ -148,6 +148,7 @@ public class Repository {
      * <p>
      *     Asks git for current branch with
      * </p>
+     * @author Joachim
      * */
     private String getCurrentBranchName() throws IOException, InterruptedException {
         //this method is not very deep, but it removes some duplicate code
@@ -173,7 +174,6 @@ public class Repository {
     }
 
     /**
-     * @author Joachim
      * This method creates an instance of Repository, clones it, and initiates the default branch (main or master) after which the
      * repository may be used as normal.
      * <p>
@@ -186,9 +186,10 @@ public class Repository {
      *     This method <strong>CAN FAIL</strong> however. When no internet is available for example, or the repository
      *     does not exist. In this case, the Repository should be destroyed
      * </p>
-     * <P>
-     *     @param newGitHubURL the link to the GitHub repository to be investigated by the user.
-     * </P>
+     *
+     * @param newGitHubURL the link to the GitHub repository to be investigated by the user.
+     *
+     *   @author Joachim
      */
     public Repository(String newGitHubURL) throws IOException, InterruptedException {
         delete(); //make sure the folder is empty.
@@ -207,17 +208,15 @@ public class Repository {
     }
 
     /**
-     * @author Joachim
      * This method gets the link to the repository
-     * <p>
+     *
      * @return the link to the repository
-     * </p>
+     * @author Joachim
      */
     public String getURL(){
         return gitHubURL;
     }
     /**
-     * @author Joachim
      * This method switches the branch and changes the output of<a href="#@link">{@link Repository#getCommits()}</a>.
      * <p>
      *     This method might take some time due to the git log command taking a long time. Secondly, this method
@@ -226,10 +225,10 @@ public class Repository {
      *     tries to switch back to the default branch, or destroys the repository, if we failed to switch to the
      *     default branch.
      * </p>
-     * <p>
+     *
      * @param branch the name of the branch the user intends to switch to. The branch must be a valid branch name, or
      *               the default branch will be switched to.
-     * </p>
+     * @author Joachim
      * */
     public void switchActiveBranch(String branch) throws IOException, InterruptedException {
         //if the branch has not already been examined by the user before, make a new one, else switch to the stored branch
@@ -243,10 +242,9 @@ public class Repository {
     }
 
     /**
-     * @author Joachim
      * <p>This method gets the link to the repository</p>
      * @return a list of <a href="#@link">{@link Commit}</a>
-     *
+     * @author Joachim
      */
     public List<Commit> getCommits()
     {
@@ -254,12 +252,12 @@ public class Repository {
     }
 
     /**
-     * @author Joachim
      * removes the repository from disk, by cleaning out <strong>THE ENTIRE FOLDER</strong>
      * <p>
      *     After calling delete, the repository will be unusable, and a new repository should be instantiated to resume
      *     functionality of the <a href="#@link">{@link Repository}</a> class.
      * </p>
+     * @author Joachim
      */
     public void delete() throws IOException {
         //method is not very deep, but it does hide the information of the repository file structure to the other classes.
