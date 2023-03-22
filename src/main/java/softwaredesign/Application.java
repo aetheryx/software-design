@@ -62,12 +62,9 @@ public class Application {
                 System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
                 System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
     /**
      * @author Joachim
