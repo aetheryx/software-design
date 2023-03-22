@@ -8,8 +8,6 @@ import java.io.File;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
-
 
 /**
  * @author Joachim
@@ -34,8 +32,9 @@ import javax.xml.crypto.dsig.keyinfo.KeyValue;
  *  </p>
  */
 public class Repository {
-    private static final String clonePath = "./Clonedrepository/";
-    private String repositoryPath = clonePath;
+    private static final String clonePath = "./ClonedRepository/";
+    static final String gitGetBranchNameCommand = "git rev-parse --abbrev-ref HEAD";
+    private String repositoryPath;
 
     /**
      * @author Joachim
@@ -46,10 +45,9 @@ public class Repository {
      *     <a href="#@link">{@link Branch#getCommits()}</a></a> returns the commits inside this branch.
      * </p>
      */
-    public class Branch {
+    private static class Branch {
         static final String gitLogCommand = "git --no-pager log --stat --word-diff=porcelain";
-        static final String gitLogNCommitsCommand = "git rev-list --count "; // use with + branchname
-        static final String gitDiffCommand = "git --no-pager diff --stat "; //use with + commit + " " + otherCommit
+        static final String gitLogNCommitsCommand = "git rev-list --count "; // use with + branchName
         private Commit[] commits;
         private String branchName;
         public Branch(String newBranchName){
@@ -69,7 +67,7 @@ public class Repository {
          * <p>This function parses one raw commit from git log --stat, Commits should be split off before they are passed
          * to this function and this function should be called seperately. This function is intended to work with
          * <a href=#@link> {@link Repository.Branch#processGitLog(Repository)}</a></p>
-         * @param unparsedCommit the raw string of the commit in the gitlog format.
+         * @param unparsedCommit the raw string of the commit in the git log format.
          * @return returns an instance of commit with their values set appropriately.
          * */
         private Commit parseCommit(String unparsedCommit){
@@ -112,12 +110,12 @@ public class Repository {
          * </p>
          */
         public void processGitLog(Repository repository) throws IOException, InterruptedException {
-            //executing gitlog
+            //executing git log
             String gitLogOutput;
 
-            String nCommitsCommandOutput = Repository.runGitCommand(gitLogNCommitsCommand + branchName, repository.repositoryPath, true);
+            String nCommitsCommandOutput = Repository.getGitCommandOutput(gitLogNCommitsCommand + branchName, repository.repositoryPath);
             int nCommits = Integer.parseInt(nCommitsCommandOutput.substring(0, nCommitsCommandOutput.length() - 1));
-            gitLogOutput = Repository.runGitCommand(gitLogCommand, repository.repositoryPath, true);
+            gitLogOutput = Repository.getGitCommandOutput(gitLogCommand, repository.repositoryPath);
             //System.out.println(gitLogOutput);
 
             //parsing git log
@@ -146,29 +144,32 @@ public class Repository {
     private String activeBranch;
     private String name;
 
+    /**
+     * <p>
+     *     Asks git for current branch with
+     * </p>
+     * */
     private String getCurrentBranchName() throws IOException, InterruptedException {
-        String branchName = runGitCommand("git rev-parse --abbrev-ref HEAD", repositoryPath, true).replace("\n","");
-        return branchName;
+        //this method is not very deep, but it removes some duplicate code
+        return getGitCommandOutput(gitGetBranchNameCommand, repositoryPath).replace("\n","");
     }
-    private static void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
-        runGitCommand(command, workingDir, false);
-    }
-    private static String runGitCommand(String command, String workingDir, boolean readIntoString) throws IOException, InterruptedException {
-        String result = "";
-        //build the process and redirect the error and input stream additional to running
+    private static ProcessBuilder buildGitCommand(String command, String workingDir){
         ProcessBuilder gitCommandBuilder = new ProcessBuilder(command.split(" "));
         gitCommandBuilder.directory(new File(workingDir));
         gitCommandBuilder.redirectErrorStream(true);
-        if (!readIntoString){
-            gitCommandBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        }
-
+        return gitCommandBuilder;
+    }
+    private static String getGitCommandOutput(String command, String workingDir) throws IOException, InterruptedException {
+        ProcessBuilder gitCommandBuilder = buildGitCommand(command,workingDir);
         Process gitCommandProcess = gitCommandBuilder.start();
-        if(readIntoString){
-            result = new String(gitCommandProcess.getInputStream().readAllBytes());
-        }
-        gitCommandProcess.waitFor(); //waits for the process to complete
+        String result = new String(gitCommandProcess.getInputStream().readAllBytes());
+        gitCommandProcess.waitFor();
         return result;
+    }
+    private static void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
+        ProcessBuilder gitCommandBuilder = buildGitCommand(command,workingDir);
+        gitCommandBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        gitCommandBuilder.start().waitFor();
     }
 
     /**
@@ -196,10 +197,13 @@ public class Repository {
         String cloneCommand = "git clone --progress " + gitHubURL;
         runGitCommand(cloneCommand, clonePath);
         File cloneDir = new File(clonePath);
-        name = cloneDir.list()[0];
+        if (cloneDir.list() != null && cloneDir.list().length > 0)
+            name = cloneDir.list()[0];
+        else {
+            throw new Error("no repository found in ./ClonedRepository"); //retry, cloning must have failed, because no actual cloned repo exists in the dir
+        }
         repositoryPath = clonePath + "/" + name;
         activeBranch = getCurrentBranchName();
-        return;
     }
 
     /**
@@ -228,6 +232,7 @@ public class Repository {
      * </p>
      * */
     public void switchActiveBranch(String branch) throws IOException, InterruptedException {
+        //if the branch has not already been examined by the user before, make a new one, else switch to the stored branch
         String checkoutCommand = "git checkout " + branch;
         runGitCommand(checkoutCommand, repositoryPath);
         if(!branches.containsKey(branch)){
