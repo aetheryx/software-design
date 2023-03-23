@@ -3,9 +3,8 @@ package softwaredesign.CommandModule;
 import java.util.Map;
 
 /**
- * @author Marko
- *
  * This class is going to initiate the deletion of the locally copied repository.
+ * @author Marko
  */
 
 public class DeleteRepositoryCommand extends Command {
