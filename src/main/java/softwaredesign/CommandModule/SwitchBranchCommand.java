@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class SwitchBranchCommand extends Command {
 
+    String name = "switch-branch";
     @Override
     void run(Map<String, String> arguments) {
 

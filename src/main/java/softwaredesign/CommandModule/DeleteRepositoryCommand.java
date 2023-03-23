@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class DeleteRepositoryCommand extends Command {
 
+    String name = "remove-repo";
     @Override
     void run(Map<String, String> arguments) {
 

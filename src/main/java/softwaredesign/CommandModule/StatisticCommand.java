@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class StatisticCommand extends Command {
 
+    String name = "statistic";
     @Override
     void run(Map<String, String> arguments) {
 
