@@ -1,12 +1,22 @@
 package softwaredesign;
 
+/**
+ <p>
+ *A utility class for the user interface, that can be used to display a progress bar, and
+ * eventually print the results.
+ * This class is constructed with
+ </p>
+
+
+ @author Ammar
+ */
+
 
 
 public class ProgressBar {
     private static String taskName;
     private static int progress;
     private static int barWidth;
-    private static boolean isProgressing;
 
 
     public ProgressBar(String taskName, int barWidth) {
@@ -40,7 +50,7 @@ public class ProgressBar {
     public void finish(String result) {
         System.out.print("\r" + taskName + ": [");
         for (int i = 0; i < barWidth; i++) {
-            System.out.print("=");
+            System.out.print("█");
         }
         System.out.print("] 100%\r");
         System.out.println(result);
