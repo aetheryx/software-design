@@ -13,6 +13,8 @@ import java.util.Map;
  * the methods that handle selecting the appropriate registered command module based on
  * raw user input (by parsing it), and preparing the arguments for the command by using it's
  * {@link ArgumentParser} instance.
+ *
+ * @author Zain
  */
 public class CommandFramework extends Framework<Command> {
     /**
