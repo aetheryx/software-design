@@ -14,8 +14,7 @@ import java.util.Map;
  * @author Zain
  */
 public class StatisticCommand extends Command {
-    private StatisticFramework statisticFramework = new StatisticFramework()
-            .registerStatisticModules();
+    private StatisticFramework statisticFramework = StatisticFramework.getInstance();
 
     public ArgumentParser argumentParser = new ArgumentParser()
             .addArgument("name", statisticFramework.getAllStatisticNames())
