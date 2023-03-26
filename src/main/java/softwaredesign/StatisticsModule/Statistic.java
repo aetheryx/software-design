@@ -15,6 +15,7 @@ public abstract class Statistic {
 
     public Statistic(String name) {
         this.name = name;
+        StatisticsManager.registerStatistic(this);
     }
 
     public String getName() {
