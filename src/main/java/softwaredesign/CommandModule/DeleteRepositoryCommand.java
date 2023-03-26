@@ -11,7 +11,7 @@ public class DeleteRepositoryCommand extends Command {
 
     String name = "remove-repo";
     @Override
-    void run(Map<String, String> arguments) {
+    public void run(Map<String, String> arguments) {
 
     }
 }
