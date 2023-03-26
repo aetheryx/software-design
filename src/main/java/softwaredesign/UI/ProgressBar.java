@@ -1,4 +1,4 @@
-package softwaredesign;
+package softwaredesign.UI;
 
 /**
  <p>

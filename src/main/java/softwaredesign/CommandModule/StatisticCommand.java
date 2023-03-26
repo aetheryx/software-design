@@ -1,4 +1,6 @@
 package softwaredesign.CommandModule;
+import softwaredesign.StatisticsModule.*;
+import softwaredesign.UI.TerminalIO;
 
 import java.util.Map;
 
@@ -9,14 +11,25 @@ import java.util.Map;
  *     Before calculation it is going to set
  *     the "arguments" variable in it's own ArgumentParser instance.
  * </p>
- * @author Marko
+ * @author Zain
  */
-
 public class StatisticCommand extends Command {
+    private StatisticFramework statisticFramework = StatisticFramework.getInstance();
 
-    String name = "statistic";
+    public ArgumentParser argumentParser = new ArgumentParser()
+            .addArgument("name", statisticFramework.getAllStatisticNames())
+            .addArgument("sort-by", new String[] {
+                    "commits",
+                    "loc"
+            });
+
     @Override
-    void run(Map<String, String> arguments) {
+    public void run(Map<String, String> arguments) {
+        TerminalIO.write("hi from stats");
+    }
 
+    @Override
+    public String getName() {
+        return "statistic";
     }
 }

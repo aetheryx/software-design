@@ -1,5 +1,7 @@
 package softwaredesign.CommandModule;
 
+import softwaredesign.Util.Framework;
+
 import java.util.Map;
 
 /**
@@ -9,11 +11,15 @@ import java.util.Map;
  * command classes (StatisticCommand, DeleteRepositoryCommand, SwitchBranchCommand)
  *
  */
-public abstract class Command {
-
+public abstract class Command implements Framework.Module {
     private String name;
-    private ArgumentParser argumentParser;
-    abstract void run(Map<String, String> arguments);
+    public ArgumentParser argumentParser = null;
+    public abstract void run(Map<String, String> arguments);
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }
 
 

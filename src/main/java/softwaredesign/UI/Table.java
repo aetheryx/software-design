@@ -1,4 +1,4 @@
-package softwaredesign;
+package softwaredesign.UI;
 
 import java.util.List;
 import java.util.SplittableRandom;
