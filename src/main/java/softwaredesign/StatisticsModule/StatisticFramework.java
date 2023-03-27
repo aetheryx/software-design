@@ -32,7 +32,7 @@ public class StatisticFramework extends Framework<Statistic> {
     }
 
     public String[] getAllStatisticNames() {
-        return (String[]) this.modules.keySet().toArray();
+        return this.modules.keySet().toArray(new String[0]);
     }
 
     public static StatisticFramework getInstance() {
