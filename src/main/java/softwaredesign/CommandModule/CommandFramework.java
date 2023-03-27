@@ -17,13 +17,23 @@ import java.util.Map;
  * @author Zain
  */
 public class CommandFramework extends Framework<Command> {
+    private boolean commandLoopActive = false;
     /**
      * Starts the main command loop, which will infinitely prompt the user for
      * the next command to run.
      */
     public void startCommandLoop() {
-        while (true) { // todo @Zain: add exit condition
+        this.commandLoopActive = true;
+        while (this.commandLoopActive) {
+            this.commandLoop();
+        }
+    }
+
+    private void commandLoop() {
+        try {
             this.promptForCommand();
+        } catch (UserFacingException userFacingException) {
+            userFacingException.print();
         }
     }
 
@@ -35,22 +45,28 @@ public class CommandFramework extends Framework<Command> {
      * raw command arguments are parsed using the {@link Command}'s {@link ArgumentParser}.
      * Once the arguments have been parsed, the {@link Command#run(Map)} method is called, running the command.
      */
-    private void promptForCommand() {
-        String rawCommand = TerminalIO.prompt("Enter a command: ");
+    private void promptForCommand() throws UserFacingException {
+        String rawCommand = TerminalIO.prompt("$ ");
         List<String> parts = List.of(rawCommand.split(" "));
         String commandName = parts.get(0);
         Command command = this.getModule(commandName);
         if (command == null) {
-            TerminalIO.write("No such command!");
-            return;
+            throw new UserFacingException("No such command! Try again.");
+        }
+
+        Map<String, String> arguments;
+        try {
+            String rawArguments = String.join(" ", parts.subList(1, parts.size()));
+            arguments = command.argumentParser.parse(rawArguments);
+        } catch (Exception err) {
+            throw new UserFacingException("Incorrect arguments for command \"" + commandName + "\". Try again.");
         }
 
         try {
-            String rawArguments = String.join(" ", parts.subList(1, parts.size()));
-            Map<String, String> arguments = command.argumentParser.parse(rawArguments);
             command.run(arguments);
         } catch (Exception err) {
-            System.out.println(err.toString());
+            TerminalIO.write("Failed to execute command:\n");
+            err.printStackTrace(System.out);
         }
     }
 }
