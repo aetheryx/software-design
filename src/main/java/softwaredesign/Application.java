@@ -1,6 +1,12 @@
 package softwaredesign;
+import softwaredesign.CommandModule.*;
 
+import softwaredesign.RepositoryModule.Commit;
 import softwaredesign.RepositoryModule.Repository;
+import softwaredesign.UI.TerminalIO;
+
+import java.io.IOException;
+
 /**
  * @author Joachim, Zain
  * This class is the main class that ties the repository and the commands together.
@@ -27,35 +33,48 @@ import softwaredesign.RepositoryModule.Repository;
  * */
 public class Application {
     private Repository repository;
-    //private List<Command> commands;
+    private CommandFramework commandFramework = new CommandFramework();
 
     /**
-     * @author Joachim
      * The run method is our main function, its responsible for deciding what to do.
      * <p>
      *     The run method calls <a href=#@link>{@link Repository#initialiseRepository}</a> when the user has not yet
      *     cloned a repository, and promptforCommand when the user has cloned a repository.
      * </p>
+     * @author Joachim, Zain
      */
     public void run(){
+        initialiseRepository();
 
+        this.commandFramework
+                .register(new StatisticCommand())
+                .register(new DeleteRepositoryCommand())
+                .register(new SwitchBranchCommand());
+
+        this.commandFramework.startCommandLoop();
     }
+
     /**
-     * @author Joachim
      * <p> This function keeps prompting the user until he gives a valid github url, and clones it by calling
      * <a href=#@link>{@link Repository#Repository(String)}</a> into <a href=#@link>{@link Repository#clone()}</a></p>
-     * after a repository has been succesfully created, it returns.
+     * after a repository has been successfully created, it returns.
+     *
+     * @author Joachim
      * */
     private void initialiseRepository(){
-
-    }
-    /**
-     * @author Joachim
-     * <p>
-     *     this method asks the user for a command, and runs it using the <a href=#@link>{@link Command}</a> class.
-     * </p>
-     * */
-    private void promptForCommand(){
-
+        try {
+            repository = new Repository("https://github.com/Tysab/webtech-lab37-assign");
+            repository.switchActiveBranch("joa");
+            for (Commit commit : repository.getCommits()) {
+                System.out.println("--------------------------------");
+                System.out.println(String.format("    CommitID          = %s", commit.getId()));
+                System.out.println(String.format("    CommitAuthor      = %s", commit.getAuthor()));
+                System.out.println(String.format("    CommitDescription = %s", commit.getDescription()));
+                System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
+                System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
