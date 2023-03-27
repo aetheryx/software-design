@@ -17,6 +17,10 @@ import java.util.Map;
  * @author Zain
  */
 public class CommandFramework extends Framework<Command> {
+    public CommandFramework() {
+        this.register(new HelpCommand(this));
+    }
+
     private boolean commandLoopActive = false;
     /**
      * Starts the main command loop, which will infinitely prompt the user for
@@ -34,6 +38,9 @@ public class CommandFramework extends Framework<Command> {
             this.promptForCommand();
         } catch (UserFacingException userFacingException) {
             userFacingException.print();
+        } catch (Exception exception) {
+            TerminalIO.write("The application encountered an unexpected error: \n");
+            exception.printStackTrace(System.out);
         }
     }
 
@@ -62,11 +69,6 @@ public class CommandFramework extends Framework<Command> {
             throw new UserFacingException("Incorrect arguments for command \"" + commandName + "\". Try again.");
         }
 
-        try {
-            command.run(arguments);
-        } catch (Exception err) {
-            TerminalIO.write("Failed to execute command:\n");
-            err.printStackTrace(System.out);
-        }
+        command.run(arguments);
     }
 }
