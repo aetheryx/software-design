@@ -2,6 +2,8 @@ package softwaredesign.StatisticsModule;
 
 import softwaredesign.Util.Framework;
 
+import java.util.Map;
+
 /**
  * The statistic framework.
  *
@@ -33,6 +35,11 @@ public class StatisticFramework extends Framework<Statistic> {
 
     public String[] getAllStatisticNames() {
         return this.modules.keySet().toArray(new String[0]);
+    }
+
+    public void runStatistic(String statisticName, Map<String, String> arguments) {
+        Statistic statistic = this.getModule(statisticName);
+        statistic.calculate(arguments);
     }
 
     public static StatisticFramework getInstance() {

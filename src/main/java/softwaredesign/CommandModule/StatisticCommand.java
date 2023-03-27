@@ -14,18 +14,21 @@ import java.util.Map;
  * @author Zain
  */
 public class StatisticCommand extends Command {
-    private StatisticFramework statisticFramework = StatisticFramework.getInstance();
+    private final StatisticFramework statisticFramework = StatisticFramework.getInstance();
 
-    public ArgumentParser argumentParser = new ArgumentParser()
-            .addArgument("name", statisticFramework.getAllStatisticNames())
-            .addArgument("sort-by", new String[] {
+    public StatisticCommand() {
+        this.argumentParser
+                .addArgument("name", statisticFramework.getAllStatisticNames())
+                .addArgument("sort-by", new String[] {
                     "commits",
                     "loc"
-            });
+                });
+    }
 
     @Override
     public void run(Map<String, String> arguments) {
-        TerminalIO.write("hi from stats");
+        String statisticName = arguments.get("name");
+        this.statisticFramework.runStatistic(statisticName, arguments);
     }
 
     @Override

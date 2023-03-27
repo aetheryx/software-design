@@ -45,13 +45,12 @@ public class CommandFramework extends Framework<Command> {
             return;
         }
 
-        if (command.argumentParser == null) {
-            command.run(null);
-            return;
+        try {
+            String rawArguments = String.join(" ", parts.subList(1, parts.size()));
+            Map<String, String> arguments = command.argumentParser.parse(rawArguments);
+            command.run(arguments);
+        } catch (Exception err) {
+            System.out.println(err.toString());
         }
-
-        String rawArguments = String.join(" ", parts.subList(1, parts.size()));
-        Map<String, String> arguments = command.argumentParser.parse(rawArguments);
-        command.run(arguments);
     }
 }
