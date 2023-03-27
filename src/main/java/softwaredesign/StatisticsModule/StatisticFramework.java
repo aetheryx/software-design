@@ -33,10 +33,6 @@ public class StatisticFramework extends Framework<Statistic> {
         return this;
     }
 
-    public String[] getAllStatisticNames() {
-        return this.modules.keySet().toArray(new String[0]);
-    }
-
     public void runStatistic(String statisticName, Map<String, String> arguments) {
         Statistic statistic = this.getModule(statisticName);
         statistic.calculate(arguments);
