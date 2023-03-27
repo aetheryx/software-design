@@ -18,7 +18,7 @@ public class StatisticCommand extends Command {
 
     public StatisticCommand() {
         this.argumentParser
-                .addArgument("name", statisticFramework.getAllStatisticNames())
+                .addArgument("name", statisticFramework.getModuleNames())
                 .addArgument("sort-by", new String[] {
                     "commits",
                     "loc"
@@ -34,5 +34,23 @@ public class StatisticCommand extends Command {
     @Override
     public String getName() {
         return "statistic";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Allows you to view various statistics of the Git repository.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "<--name=contributors,branches,...> [--sort-by=loc,commits]";
+    }
+
+    @Override
+    public String getExamples() {
+        return "statistic --name=contributors\n" +
+                "statistic --name=contributors --sort-by=loc\n" +
+                "statistic --name=weekdays --sort-by=commits\n" +
+                "statistic --name=issues";
     }
 }
