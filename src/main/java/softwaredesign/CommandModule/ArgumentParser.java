@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Marko
  */
 public class ArgumentParser {
-    private Map<String, String[]> arguments;
+    private Map<String, String[]> arguments = new HashMap<>();
 
     public ArgumentParser addArgument(String name, String[] values){
 
