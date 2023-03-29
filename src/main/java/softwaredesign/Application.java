@@ -15,7 +15,7 @@ import java.io.IOException;
  *     class (representing Git data)
  *     and the <a href = #@Link>{@link Command}</a> classes. It handles the initialisation of the <a href=#@link>{@link Repository}</a>
  *     class (by requesting input from the
- *     user) (see also for more details: description of the Repository). It also acts as the main “command handler”
+ *     user) (see also for more details: description of the Repository). It also acts as the main command handler
  *     thread, requesting command input from the user, parsing it, selecting the right command class to execute, and
  *     preparing the arguments for this command class based on its argument parser (see Command class).
  * </p>
