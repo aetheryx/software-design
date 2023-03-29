@@ -8,10 +8,28 @@ import java.util.Map;
  */
 
 public class DeleteRepositoryCommand extends Command {
-
-    String name = "remove-repo";
     @Override
     public void run(Map<String, String> arguments) {
 
+    }
+
+    @Override
+    public String getDescription() {
+        return "wip placeholder";
+    }
+
+    @Override
+    public String getUsage() {
+        return "wip placeholder";
+    }
+
+    @Override
+    public String getExamples() {
+        return "wip placeholder";
+    }
+
+    @Override
+    public String getName() {
+        return "delete-repository";
     }
 }
