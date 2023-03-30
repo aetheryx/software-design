@@ -32,8 +32,15 @@ import java.io.IOException;
  * </p>
  * */
 public class Application {
+    private static Application instance = new Application();
     private Repository repository;
     private CommandFramework commandFramework = new CommandFramework();
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    private Application() {}
 
     /**
      * The run method is our main function, its responsible for deciding what to do.
@@ -63,18 +70,24 @@ public class Application {
      * */
     private void initialiseRepository(){
         try {
-            repository = new Repository("https://github.com/Tysab/webtech-lab37-assign");
-            repository.switchActiveBranch("joa");
+            repository = new Repository("https://github.com/mhzyali/co-labs");
+            repository.switchActiveBranch("master");
             for (Commit commit : repository.getCommits()) {
-                System.out.println("--------------------------------");
-                System.out.println(String.format("    CommitID          = %s", commit.getId()));
-                System.out.println(String.format("    CommitAuthor      = %s", commit.getAuthor()));
-                System.out.println(String.format("    CommitDescription = %s", commit.getDescription()));
-                System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
-                System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
+//                System.out.println("--------------------------------");
+//                System.out.println(String.format("    CommitID          = %s", commit.getId()));
+//                System.out.println(String.format("    CommitAuthor      = %s", commit.getAuthor()));
+//                System.out.println(String.format("    CommitDescription = %s", commit.getDescription()));
+//                System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
+//                System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public static Application getInstance() {
+        return instance;
+    }
+
+
 }

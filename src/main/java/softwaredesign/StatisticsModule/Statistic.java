@@ -1,6 +1,8 @@
 package softwaredesign.StatisticsModule;
 
+import softwaredesign.Application;
 import softwaredesign.CommandModule.StatisticCommand;
+import softwaredesign.RepositoryModule.Repository;
 import softwaredesign.Util.Framework;
 
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Map;
  */
 public abstract class Statistic implements Framework.Module {
     private String name;
+    protected Repository repository = Application.getInstance().getRepository();
 
     public Statistic(String name) {
         this.name = name;
