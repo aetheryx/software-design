@@ -26,8 +26,12 @@ public class Framework<T extends Framework.Module> {
         return this;
     }
 
-    protected T getModule(String name) {
+    public T getModule(String name) {
         return this.modules.get(name);
+    }
+
+    public String[] getModuleNames() {
+        return this.modules.keySet().toArray(new String[0]);
     }
 
     /**

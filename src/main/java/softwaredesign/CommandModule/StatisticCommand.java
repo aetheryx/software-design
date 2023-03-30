@@ -14,22 +14,43 @@ import java.util.Map;
  * @author Zain
  */
 public class StatisticCommand extends Command {
-    private StatisticFramework statisticFramework = StatisticFramework.getInstance();
+    private final StatisticFramework statisticFramework = StatisticFramework.getInstance();
 
-    public ArgumentParser argumentParser = new ArgumentParser()
-            .addArgument("name", statisticFramework.getAllStatisticNames())
-            .addArgument("sort-by", new String[] {
+    public StatisticCommand() {
+        this.argumentParser
+                .addArgument("name", statisticFramework.getModuleNames())
+                .addArgument("sort-by", new String[] {
                     "commits",
                     "loc"
-            });
+                });
+    }
 
     @Override
     public void run(Map<String, String> arguments) {
-        TerminalIO.write("hi from stats");
+        String statisticName = arguments.get("name");
+        this.statisticFramework.runStatistic(statisticName, arguments);
     }
 
     @Override
     public String getName() {
         return "statistic";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Allows you to view various statistics of the Git repository.";
+    }
+
+    @Override
+    public String getUsage() {
+        return "<--name=contributors,branches,...> [--sort-by=loc,commits]";
+    }
+
+    @Override
+    public String getExamples() {
+        return "statistic --name=contributors\n" +
+                "statistic --name=contributors --sort-by=loc\n" +
+                "statistic --name=weekdays --sort-by=commits\n" +
+                "statistic --name=issues";
     }
 }
