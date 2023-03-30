@@ -53,22 +53,15 @@ public class CommandFramework extends Framework<Command> {
      * Once the arguments have been parsed, the {@link Command#run(Map)} method is called, running the command.
      */
     private void promptForCommand() throws UserFacingException {
-        String rawCommand = TerminalIO.prompt("$ ");
+        String rawCommand = TerminalIO.prompt("github-statistics-cli > ");
         List<String> parts = List.of(rawCommand.split(" "));
         String commandName = parts.get(0);
         Command command = this.getModule(commandName);
         if (command == null) {
-            throw new UserFacingException("No such command! Try again.");
+            throw new UserFacingException("No such command! Try using the \"help\" command to view a list of commands.");
         }
 
-        Map<String, String> arguments;
-        try {
-            String rawArguments = String.join(" ", parts.subList(1, parts.size()));
-            arguments = command.argumentParser.parse(rawArguments);
-        } catch (Exception err) {
-            throw new UserFacingException("Incorrect arguments for command \"" + commandName + "\". Try again.");
-        }
-
-        command.run(arguments);
+        String rawArguments = String.join(" ", parts.subList(1, parts.size()));
+        command.execute(rawArguments);
     }
 }

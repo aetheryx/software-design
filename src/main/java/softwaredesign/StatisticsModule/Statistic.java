@@ -3,7 +3,6 @@ package softwaredesign.StatisticsModule;
 import softwaredesign.CommandModule.StatisticCommand;
 import softwaredesign.Util.Framework;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
