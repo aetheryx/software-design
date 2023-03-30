@@ -32,8 +32,15 @@ import java.io.IOException;
  * </p>
  * */
 public class Application {
+    private static Application instance = new Application();
     private Repository repository;
     private CommandFramework commandFramework = new CommandFramework();
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    private Application() {}
 
     /**
      * The run method is our main function, its responsible for deciding what to do.
@@ -77,4 +84,10 @@ public class Application {
             throw new RuntimeException(e);
         }
     }
+
+    public static Application getInstance() {
+        return instance;
+    }
+
+
 }
