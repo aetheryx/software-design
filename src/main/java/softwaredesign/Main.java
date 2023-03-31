@@ -1,7 +1,7 @@
 package softwaredesign;
 
-import softwaredesign.RepositoryModule.Commit;
-import softwaredesign.RepositoryModule.Repository;
+import softwaredesign.repository.Commit;
+import softwaredesign.repository.Repository;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,10 +29,8 @@ public class Main {
             repository.delete();
         } catch (IOException e) {
             System.out.println("Io exception during test");
-            return;
         } catch (InterruptedException e) {
             System.out.println("interupted exception during test");
-            return;
         }
     }
 }

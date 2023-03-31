@@ -1,4 +1,4 @@
-package softwaredesign.UI;
+package softwaredesign.ui;
 
 public class ProgressBar {
     private String taskName;
@@ -19,11 +19,11 @@ public class ProgressBar {
      * @author Ammar
      */
     public void start() {
-        System.out.print(taskName + ": [");
+        TerminalIO.write(taskName + ": [");
         for (int i = 0; i < BAR_WIDTH; i++) {
-            System.out.print(" ");
+            TerminalIO.write(" ");
         }
-        System.out.print("] 0%");
+        TerminalIO.write("] 0%");
     }
 
     /**
@@ -40,14 +40,14 @@ public class ProgressBar {
         }
 
         progress = newProgress;
-        System.out.print("\r" + taskName + ": [");
+        TerminalIO.write("\r" + taskName + ": [");
         for (int i = 0; i < progress; i++) {
-            System.out.print("█");
+            TerminalIO.write("█");
         }
         for (int i = progress; i < BAR_WIDTH; i++) {
-            System.out.print(" ");
+            TerminalIO.write(" ");
         }
-        System.out.print("] " + newProcent + "%");
+        TerminalIO.write("] " + newProcent + "%");
     }
 
     /**
@@ -59,7 +59,7 @@ public class ProgressBar {
      * @author ammar
      */
     public void finish(String result) {
-        System.out.print("\r" + (result == null ? " \r" : result));
+        TerminalIO.write("\r" + result);
     }
 
 

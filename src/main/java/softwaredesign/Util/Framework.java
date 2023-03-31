@@ -1,4 +1,4 @@
-package softwaredesign.Util;
+package softwaredesign.util;
 
 import java.util.HashMap;
 import java.util.Map;

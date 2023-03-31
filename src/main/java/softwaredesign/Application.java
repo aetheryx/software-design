@@ -1,9 +1,8 @@
 package softwaredesign;
-import softwaredesign.CommandModule.*;
+import softwaredesign.commands.*;
 
-import softwaredesign.RepositoryModule.Commit;
-import softwaredesign.RepositoryModule.Repository;
-import softwaredesign.UI.TerminalIO;
+import softwaredesign.repository.Repository;
+import softwaredesign.ui.TerminalIO;
 
 import java.io.IOException;
 
@@ -32,21 +31,24 @@ import java.io.IOException;
  * </p>
  * */
 public class Application {
-    private static Application instance = new Application();
+    private Application() {}
+    private static final Application instance = new Application();
+    public static Application getInstance() {
+        return instance;
+    }
+
+    private final CommandFramework commandFramework = new CommandFramework();
     private Repository repository;
-    private CommandFramework commandFramework = new CommandFramework();
 
     public Repository getRepository() {
         return repository;
     }
 
-    private Application() {}
-
     /**
-     * The run method is our main function, its responsible for deciding what to do.
+     * The run method is our main function, it's responsible for deciding what to do.
      * <p>
      *     The run method calls <a href=#@link>{@link Repository#Repository(String)}</a> when the user has not yet
-     *     cloned a repository, and promptforCommand when the user has cloned a repository.
+     *     cloned a repository, and TODO when the user has cloned a repository.
      * </p>
      * @author Joachim, Zain
      */
@@ -76,9 +78,5 @@ public class Application {
                 TerminalIO.write("git repository unavailable: " + e.getMessage() + "\n");
             }
         }
-    }
-
-    public static Application getInstance() {
-        return instance;
     }
 }
