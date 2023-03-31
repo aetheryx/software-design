@@ -7,6 +7,7 @@ import java.util.List;
 import java.io.File;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
+import softwaredesign.UI.TerminalIO;
 
 
 /**
@@ -22,7 +23,7 @@ import org.apache.commons.io.FileUtils;
  *  </p>
  *  <p>
  *      This class is dependant on the following:
- *      <li> <a href="#@link">{@link TerminalIO}</a> to report errors to the user. </li>
+ *      <li> <a href="#@link">{@link softwaredesign.UI.TerminalIO}</a> to report errors to the user. </li>
  *
  *  </p>
  *  <p>
@@ -34,12 +35,13 @@ import org.apache.commons.io.FileUtils;
 public class Repository {
     private static final String clonePath = "./ClonedRepository/";
     static final String gitGetBranchNameCommand = "git rev-parse --abbrev-ref HEAD";
+    static final String GET_ALL_BRANCHES_COMMAND = "git branch -r";
     private String repositoryPath;
 
     /**
      * This class is responsible for storing the commits from a gitlog and for populating these commits.
      * <p>
-     *     populating the commits in the branch happens inside <a href="#@link">{@link Repository.Branch#processGitLog()}</a>. With
+     *     populating the commits in the branch happens inside <a href="#@link">{@link Repository.Branch#processGitLog(Repository)} ()}</a>. With
      *     <a href="#@link">{@link Branch#getName()} the branchname can be retrieved, and
      *     <a href="#@link">{@link Branch#getCommits()}</a></a> returns the commits inside this branch.
      * </p>
@@ -75,10 +77,12 @@ public class Repository {
             String commitId = unparsedCommitLines[0];
             int commitNumberOfLineDeletions = 0;
             int commitNumberOfLineAdditions = 0;
+            boolean commitIsAMerge = false;
 
             int j = 1; //represents the current line to be parsed.
             if (unparsedCommitLines[j].startsWith("Merge: ")){
                 j++;
+                commitIsAMerge = true;
             }
             String commitAuthorName = unparsedCommitLines[j].substring(8);
             j++;
@@ -87,18 +91,20 @@ public class Repository {
             String commitDescription = unparsedCommitLines[j].substring(4);
 
             //now for the line additions and removals
-            String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
-            for (String change : commitChanges) {
-                String number = change.split(" ")[0];
-                if (change.contains("-")){
-                    //deletion
-                    commitNumberOfLineDeletions = Integer.parseInt(number);
-                } else if (change.contains("+")) {
-                    //addition
-                    commitNumberOfLineAdditions = Integer.parseInt(number);
+            if (!commitIsAMerge){
+                String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
+                for (String change : commitChanges) {
+                    String number = change.split(" ")[0];
+                    if (change.contains("-")){
+                        //deletion
+                        commitNumberOfLineDeletions = Integer.parseInt(number);
+                    } else if (change.contains("+")) {
+                        //addition
+                        commitNumberOfLineAdditions = Integer.parseInt(number);
+                    }
                 }
             }
-            return new Commit(commitId, commitDescription, commitAuthorName, commitNumberOfLineAdditions,commitNumberOfLineDeletions, commitDate);
+            return new Commit(commitId, commitDescription, commitAuthorName, commitNumberOfLineAdditions,commitNumberOfLineDeletions, commitDate, branchName);
         }
 
         /**
@@ -179,7 +185,7 @@ public class Repository {
      * <p>
      *     This method needs to clone the repository, which takes quite some time (in case of the lunux repo some 17
      *     minutes). Therefore this method also takes quite some time. This method does however keep the user up to date
-     *     on progress using a progress bar, and is therefore also dependant on the <a href="#@link">{@link ProgressBar}
+     *     on progress using a progress bar, and is therefore also dependant on the <a href="#@link">{@link softwaredesign.UI.ProgressBar}
      *     </a> class.
      * </p>
      * <p>
@@ -221,7 +227,7 @@ public class Repository {
      * <p>
      *     This method might take some time due to the git log command taking a long time. Secondly, this method
      *     <strong>CAN FAIL</strong> if the branch or the internet is not available for example. If this is the case,
-     *     the user is notified through the <a href="#@link">{@link TerminalIO}</a> class, after which the method
+     *     the user is notified through the <a href="#@link">{@link softwaredesign.UI.TerminalIO}</a> class, after which the method
      *     tries to switch back to the default branch, or destroys the repository, if we failed to switch to the
      *     default branch.
      * </p>
@@ -262,5 +268,31 @@ public class Repository {
     public void delete() throws IOException {
         //method is not very deep, but it does hide the information of the repository file structure to the other classes.
         FileUtils.cleanDirectory(new File(clonePath));
+    }
+
+    /**
+     * <p>
+     *     This method returns a list of all the branches one can switch to using <a href=#@link> {@link Repository#switchActiveBranch(String)}</a>
+     * </p>
+     * @author Joachim
+     * @return an arraylist of strings containing all branches.
+     * @throws IOException if the git repository is not available
+     * @throws InterruptedException if the interfacing with git is interrupted.
+     * */
+    public List<String> getBranchNames() throws IOException, InterruptedException {
+        List<String> branches = new ArrayList<>();
+        String allBranches = getGitCommandOutput(GET_ALL_BRANCHES_COMMAND, repositoryPath);
+
+        //parse branchnames
+        String[] unparsedBranches = allBranches.split("\n  origin/");
+
+        //remove \n at the last branchname
+        if(unparsedBranches.length > 0) unparsedBranches[unparsedBranches.length - 1] = unparsedBranches[unparsedBranches.length - 1].replace("\n", "");
+        for (String branch : unparsedBranches) { //add the branchnames one by one.
+            if (!branch.contains("HEAD")){ //make sure this branch is removed, I dont know what this branch is exactly.
+                branches.add(branch);
+            }
+        }
+        return branches;
     }
 }
