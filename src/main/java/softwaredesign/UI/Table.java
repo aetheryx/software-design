@@ -125,20 +125,20 @@ public class Table {
         return tableString.toString();
     }
 
-    public void sort(String headerField, Comparator<Integer> comparator) {
+    public void sort(String headerField) {
         int index = this.headers.indexOf(headerField);
         if (index == -1) {
-            throw new RuntimeException("Header field not found in this table's headers");
+            throw new IllegalArgumentException("Header field not found in this table's headers");
         }
 
         this.values.sort((a, b) -> {
             var valA = a.get(index);
             var valB = b.get(index);
             if (!(valA instanceof Integer) || !(valB instanceof Integer)) {
-                throw new RuntimeException("Table values are not integers");
+                throw new IllegalArgumentException("Table values of this header field are not integers");
             }
 
-            return comparator.compare((Integer) valA, (Integer) valB);
+            return Integer.compare((Integer) valB, (Integer) valA);
         });
     }
 }
