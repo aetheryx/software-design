@@ -1,12 +1,10 @@
 package softwaredesign.StatisticsModule;
 
-import softwaredesign.Application;
 import softwaredesign.CommandModule.UserFacingException;
 import softwaredesign.RepositoryModule.Commit;
 import softwaredesign.UI.Table;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +27,6 @@ public class BranchStatistic extends GitStatistic {
                 locsInBranches.putIfAbsent(branchNames.get(i), 0);
                 commitsInBranches.putIfAbsent(branchNames.get(i), 0);
                 for (Commit commit : repository.getCommits()) {
-
                     locsInBranches.compute(commit.getBranch(), (k, v) -> v + commit.getDiffAdded() + commit.getDiffRemoved());
                     commitsInBranches.compute(commit.getBranch(), (k, v) -> v + 1);
                 }
