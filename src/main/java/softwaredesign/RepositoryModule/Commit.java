@@ -15,19 +15,22 @@ public class Commit {
     private int diffRemoved;
     private String date;
 
+    private String branch;
+
     /**
      * <p>
      *  this method constructs a commit from the parameters given.
      * </p>
      * @returns the commit created
      */
-    public Commit(String newID, String newDescription, String newAuthor, int newDiffAdded, int newDiffRemoved, String newDate){
+    public Commit(String newID, String newDescription, String newAuthor, int newDiffAdded, int newDiffRemoved, String newDate, String newBranch){
         id = newID;
         description = newDescription;
         author = newAuthor;
         diffAdded = newDiffAdded;
         diffRemoved = newDiffRemoved;
         date = newDate;
+        branch = newBranch;
     }
 
     /**
@@ -84,5 +87,31 @@ public class Commit {
     public int getDiffRemoved() {
         return diffRemoved;
     }
+    /**
+     * <p>
+     *  gets the name of the branch this commit was fetched from in string form.
+     * </p>
+     * @returns the branch name as String
+     * @author Joachim
+     */
+    public String getBranch(){ return branch; }
 
+    /**
+     * <p>
+     *  gets the unparsed date in git log's date format.
+     * </p>
+     * @returns a String containing date.
+     * @author Joachim
+     */
+    public String getDate(){ return date; }
+
+    public String toString(){
+        String toReturn = "";
+        toReturn += String.format("    CommitID          = %s\n", getId());
+        toReturn += String.format("    CommitAuthor      = %s\n", getAuthor());
+        toReturn += String.format("    CommitDescription = %s\n", getDescription());
+        toReturn += String.format("    CommitDiffAdded   = %d\n", getDiffAdded());
+        toReturn += String.format("    CommitDiffRemoved = %d\n", getDiffRemoved());
+        return toReturn;
+    }
 }
