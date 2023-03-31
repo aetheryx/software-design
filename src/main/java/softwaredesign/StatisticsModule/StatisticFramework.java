@@ -26,9 +26,6 @@ public class StatisticFramework extends Framework<Statistic> {
         this
                 .register(new BranchStatistic())
                 .register(new ContributorStatistic())
-                .register(new IssueStatistic())
-                .register(new PullStatistic())
-                .register(new ReleaseStatistic())
                 .register(new WeekdayStatistic());
 
         return this;
@@ -36,7 +33,7 @@ public class StatisticFramework extends Framework<Statistic> {
 
     public void runStatistic(String statisticName, Map<String, String> arguments) throws UserFacingException {
         Statistic statistic = this.getModule(statisticName);
-        statistic.calculate(arguments);
+        statistic.execute(arguments);
     }
 
     public static StatisticFramework getInstance() {

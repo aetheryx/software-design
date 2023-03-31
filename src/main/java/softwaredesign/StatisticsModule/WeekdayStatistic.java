@@ -1,5 +1,7 @@
 package softwaredesign.StatisticsModule;
 
+import softwaredesign.UI.Table;
+
 import java.util.Map;
 
 public class WeekdayStatistic extends GitStatistic {
@@ -8,7 +10,8 @@ public class WeekdayStatistic extends GitStatistic {
     }
 
     @Override
-    public void calculate(Map<String, String> arguments) {
+    public Table calculate(Map<String, String> arguments) {
         // todo
+        return null;
     }
 }
