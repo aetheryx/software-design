@@ -36,7 +36,7 @@ public class HelpCommand extends Command {
     public HelpCommand(CommandFramework commandFramework) {
         this.commandFramework = commandFramework;
         this.argumentParser
-                .addArgument("command", commandFramework.getModuleNames());
+                .addOptionalArgument("command", commandFramework.getModuleNames());
     }
 
     @Override

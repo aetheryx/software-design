@@ -3,6 +3,7 @@ import softwaredesign.StatisticsModule.*;
 import softwaredesign.UI.TerminalIO;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is going to initiate the Statistic calculation.
@@ -18,11 +19,11 @@ public class StatisticCommand extends Command {
 
     public StatisticCommand() {
         this.argumentParser
-                .addArgument("name", statisticFramework.getModuleNames())
-                .addArgument("sort-by", new String[] {
-                    "commits",
-                    "loc"
-                });
+                .addRequiredArgument("name", statisticFramework.getModuleNames())
+                .addOptionalArgument("sort-by", Set.of(
+                        "commits",
+                        "loc"
+                ));
     }
 
     @Override

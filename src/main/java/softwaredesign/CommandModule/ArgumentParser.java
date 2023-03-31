@@ -2,6 +2,7 @@ package softwaredesign.CommandModule;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is going to parse the input arguments, in a Command object.
@@ -16,22 +17,56 @@ import java.util.Map;
  * @author Marko
  */
 public class ArgumentParser {
-    private Map<String, String[]> arguments = new HashMap<>();
+    private final Map<String, Set<String>> requiredArguments = new HashMap<>();
+    private final Map<String, Set<String>> optionalArguments = new HashMap<>();
 
-    public ArgumentParser addArgument(String name, String[] values) {
-
-        if(!arguments.containsKey(name)){
-            arguments.put(name, values);
-        }
-        else {
-            // TODO: It should overwrite or return an error?
-        }
-
+    public ArgumentParser addRequiredArgument(String name, Set<String> values) {
+        this.requiredArguments.put(name, values);
         return this;
     }
 
-    public Map<String, String> parse(String input) {
-        return this.parseRaw(input);
+    public ArgumentParser addOptionalArgument(String name, Set<String> values) {
+        this.optionalArguments.put(name, values);
+        return this;
+    }
+
+    private void assertValid(Map.Entry<String, Set<String>> entry, String value) throws UserFacingException {
+        String argumentName = entry.getKey();
+        Set<String> argumentValues = entry.getValue();
+        if (argumentValues != null && !argumentValues.contains(value)) {
+            throw new UserFacingException("Argument \"")
+                    .append(argumentName)
+                    .append("\" must be one of the following values: ")
+                    .append(String.join(", ", argumentValues));
+        }
+    }
+
+    public Map<String, String> parse(String input) throws UserFacingException {
+        Map<String, String> rawArguments = this.parseRaw(input);
+        Map<String, String> outputArguments = new HashMap<>();
+
+        for (Map.Entry<String, Set<String >> entry : requiredArguments.entrySet()) {
+            String argumentName = entry.getKey();
+            if (!rawArguments.containsKey(argumentName)) {
+                throw new UserFacingException("The required \"")
+                        .append(argumentName)
+                        .append("\" argument is missing.");
+            }
+
+            this.assertValid(entry, rawArguments.get(argumentName));
+            outputArguments.put(argumentName, rawArguments.get(argumentName));
+        }
+
+        for (Map.Entry<String, Set<String >> entry : optionalArguments.entrySet()) {
+            String argumentName = entry.getKey();
+            String argumentValue = rawArguments.get(argumentName);
+            if (argumentValue != null) {
+                this.assertValid(entry, argumentValue);
+                outputArguments.put(argumentName, rawArguments.get(argumentName));
+            }
+        }
+
+        return outputArguments;
     }
 
     private Map<String, String> parseRaw (String input){
@@ -40,6 +75,7 @@ public class ArgumentParser {
         String[] inputArgs = input.trim().split(" ");
 
         for(String arg : inputArgs){
+            if (arg.length() < 2) continue;
             String temp = arg.substring(2);
 
             for(int i=0; i<temp.length(); i++){

@@ -2,6 +2,7 @@ package softwaredesign.Util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a generic framework, implementing the Inversion of Control design principle.
@@ -30,8 +31,8 @@ public abstract class Framework<T extends Framework.Module> {
         return this.modules.get(name);
     }
 
-    public String[] getModuleNames() {
-        return this.modules.keySet().toArray(new String[0]);
+    public Set<String> getModuleNames() {
+        return this.modules.keySet();
     }
 
     /**
