@@ -14,11 +14,11 @@ import java.util.Map;
 
 public class SwitchBranchCommand extends Command {
     @Override
-    public void run(Map<String, String> arguments) {
+    public void run(Map<String, String> arguments) throws UserFacingException {
         try {
             getRepository().switchActiveBranch(arguments.get("branch"));
         } catch (IOException | InterruptedException e) {
-            TerminalIO.write("branch unavailable: " + e.getMessage() + "\n");
+            throw new UserFacingException("branch unavailable: " + e.getMessage() + "\n");
         }
     }
 
