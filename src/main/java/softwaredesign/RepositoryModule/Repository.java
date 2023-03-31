@@ -96,12 +96,16 @@ public class Repository {
                 String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
                 for (String change : commitChanges) {
                     String number = change.split(" ")[0];
-                    if (change.contains("-")){
-                        //deletion
-                        commitNumberOfLineDeletions = Integer.parseInt(number);
-                    } else if (change.contains("+")) {
-                        //addition
-                        commitNumberOfLineAdditions = Integer.parseInt(number);
+                    try {
+                        if (change.contains("-")){
+                            //deletion
+                            commitNumberOfLineDeletions = Integer.parseInt(number);
+                        } else if (change.contains("+")) {
+                            //addition
+                            commitNumberOfLineAdditions = Integer.parseInt(number);
+                        }
+                    } catch (Exception e) {
+                        // TODO
                     }
                 }
             }
@@ -130,8 +134,8 @@ public class Repository {
         public void processGitLog(Repository repository) throws IOException, InterruptedException {
             //executing git log
             String gitLogOutput;
-
             String nCommitsCommandOutput = Repository.getGitCommandOutput(gitLogNCommitsCommand + branchName, repository.repositoryPath);
+
             int nCommits = Integer.parseInt(nCommitsCommandOutput.substring(0, nCommitsCommandOutput.length() - 1));
             gitLogOutput = Repository.getGitCommandOutput(gitLogCommand, repository.repositoryPath);
             //System.out.println(gitLogOutput);
@@ -228,9 +232,11 @@ public class Repository {
 
         repositoryPath = clonePath + "/" + name;
         activeBranch = getCurrentBranchName();
+        switchActiveBranch(activeBranch);
+        System.out.print("\rSuccessfully cloned repository.\n\n");
     }
 
-    private void cloneRepository() throws IOException {
+    private void cloneRepository() throws IOException, InterruptedException {
         ProgressBar progressBar = new ProgressBar("Cloning repository");
         progressBar.start();
 
@@ -251,7 +257,12 @@ public class Repository {
             progressBar.setProgress(percent);
         }
 
-        progressBar.finish("Cloned repository successfully!\n\n");
+        process.waitFor();
+        if (process.exitValue() == 0) {
+            progressBar.finish("Cloned repository successfully! Parsing git log...");
+        } else {
+            progressBar.finish();
+        }
     }
 
     /**
@@ -280,7 +291,7 @@ public class Repository {
     public void switchActiveBranch(String branch) throws IOException, InterruptedException {
         //if the branch has not already been examined by the user before, make a new one, else switch to the stored branch
         String checkoutCommand = "git checkout " + branch;
-        runGitCommand(checkoutCommand, repositoryPath);
+        getGitCommandOutput(checkoutCommand, repositoryPath);
         if(!branches.containsKey(branch)){
             branches.put(branch, new Branch(branch));
             branches.get(branch).processGitLog(this);
@@ -293,8 +304,7 @@ public class Repository {
      * @return a list of <a href="#@link">{@link Commit}</a>
      * @author Joachim
      */
-    public List<Commit> getCommits()
-    {
+    public List<Commit> getCommits() {
         return List.of(branches.get(activeBranch).commits);
     }
 
