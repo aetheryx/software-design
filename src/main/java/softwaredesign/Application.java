@@ -58,10 +58,6 @@ public class Application {
 
         initialiseRepository();
         this.commandFramework.startCommandLoop();
-
-
-
-
     }
 
     /**
