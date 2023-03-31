@@ -40,6 +40,30 @@ public class HelpCommand extends Command {
         String commandName = arguments.get("command");
         Command command = commandFramework.getModule(commandName);
 
-        TerminalIO.write(command.getDescription());
+        String output = command == null
+                ? this.listCommands()
+                : this.describeCommand(command);
+
+        TerminalIO.write(output);
+    }
+
+    private String listCommands() {
+        StringBuilder sb = new StringBuilder("List of commands:\n");
+        for (String commandName : commandFramework.getModuleNames()) {
+            Command command = commandFramework.getModule(commandName);
+            sb.append(String.format("  - %s - %s\n", command.getName(), command.getDescription()));
+        }
+
+        return sb.toString();
+    }
+
+    private String describeCommand(Command command) {
+        return String.format(
+                "Help for command \"%s\":\nUsage: \t%s\nDescription: \t%s\nExamples: \t%s",
+                command.getName(),
+                command.getUsage(),
+                command.getDescription(),
+                command.getExamples()
+        );
     }
 }
