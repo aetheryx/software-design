@@ -59,18 +59,11 @@ public class ProgressBar {
      * @author ammar
      */
     public void finish(String result) {
-        System.out.print("\r");
-        if (result != null) {
-            System.out.print(result);
-        }
-//        System.out.print("\r" + taskName + ": [");
-//        for (int i = 0; i < barWidth; i++) {
-//            System.out.print("█");
-//        }
-//        System.out.print("] 100%\r");
-//        System.out.println(result);
-//        System.out.println("\r");
+        System.out.print("\r" + (result == null ? " \r" : result));
+    }
 
 
+    public void finish() {
+        this.finish(" \r");
     }
 }
