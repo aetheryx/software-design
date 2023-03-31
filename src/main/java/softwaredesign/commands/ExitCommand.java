@@ -33,11 +33,6 @@ public class ExitCommand extends Command {
     }
 
     @Override
-    public String getUsage() {
-        return "<--name=contributors,branches,...> [--sort-by=loc,commits]";
-    }
-
-    @Override
     public String getExamples() {
         return "statistic --name=contributors\n" +
                 "statistic --name=contributors --sort-by=loc\n" +

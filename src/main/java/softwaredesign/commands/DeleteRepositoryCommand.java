@@ -30,11 +30,6 @@ public class DeleteRepositoryCommand extends Command {
     }
 
     @Override
-    public String getUsage() {
-        return "delete";
-    }
-
-    @Override
     public String getExamples() {
         return "delete";
     }

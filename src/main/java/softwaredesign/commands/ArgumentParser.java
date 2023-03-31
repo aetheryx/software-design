@@ -88,4 +88,11 @@ public class ArgumentParser {
         return parsedArguments;
     }
 
+    public Map<String, Set<String>> getOptionalArguments() {
+        return optionalArguments;
+    }
+
+    public Map<String, Set<String>> getRequiredArguments() {
+        return requiredArguments;
+    }
 }

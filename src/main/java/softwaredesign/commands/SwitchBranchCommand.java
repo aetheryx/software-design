@@ -31,11 +31,6 @@ public class SwitchBranchCommand extends Command {
     }
 
     @Override
-    public String getUsage() {
-        return "usage: switch-branch --branch=<INSERT BRANCHNAME>";
-    }
-
-    @Override
     public String getExamples() {
         return "switch-branch --branch=main";
     }

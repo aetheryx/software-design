@@ -20,11 +20,6 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public String getUsage() {
-        return "[--command=statistic,switch-branch,...]";
-    }
-
-    @Override
     public String getExamples() {
         return "help\n" +
                 "help --command=statistic\n" +

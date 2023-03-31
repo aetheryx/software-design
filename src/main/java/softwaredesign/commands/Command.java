@@ -5,6 +5,8 @@ import softwaredesign.repository.Repository;
 import softwaredesign.util.Framework;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Provides a template for individual command classes to extend.
@@ -59,10 +61,42 @@ public abstract class Command implements Framework.Module {
 
     /**
      * The usage for this command. Displayed to the user in the help command.
+     * Defaults to generating the usage dynamically from the {@link ArgumentParser}, but
+     * can be overridden to specify a more detailed usage.
      *
-     * @return
+     * @return The usage string, displayed in the help command.
      */
-    public abstract String getUsage();
+    public String getUsage() {
+        Map<String, Set<String>> requiredArguments = this.argumentParser.getRequiredArguments();
+        Map<String, Set<String>> optionalArguments = this.argumentParser.getOptionalArguments();
+        StringBuilder sb = new StringBuilder();
+
+        Function<Map.Entry<String, Set<String>>, Void> formatArgument = argument -> {
+            sb.append("--").append(argument.getKey()).append("=");
+
+            Set<String> argumentValues = argument.getValue();
+            if (argumentValues == null) {
+                sb.append("(string)");
+            } else {
+                sb.append(String.join("|", argumentValues));
+            }
+            return null;
+        };
+
+        for (Map.Entry<String, Set<String>> requiredEntry : requiredArguments.entrySet()) {
+            sb.append("<");
+            formatArgument.apply(requiredEntry);
+            sb.append("> ");
+        }
+
+        for (Map.Entry<String, Set<String>> optionalEntry : optionalArguments.entrySet()) {
+            sb.append("[");
+            formatArgument.apply(optionalEntry);
+            sb.append("] ");
+        }
+
+        return sb.toString();
+    }
 
     /**
      * Examples of arguments for this command. Displayed to the user in the help command.
