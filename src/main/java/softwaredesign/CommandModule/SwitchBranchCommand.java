@@ -6,13 +6,26 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * This command is going to switch the
- * currently active branch to the branch argument.
+ * <h3>This Command will switch the active branch for the git repository.</h3>
+ * <p>
+ *     This class inherits from <a href=#@link>{@link Command}</a> and as it suggests,
+ *     check Command for the usage of this command.
+ * </p>
+ * <p>
+ *     Because switching the active branch requires action from  <a href=#@link>{@link softwaredesign.RepositoryModule.Repository}</a>
+ *     This class is dependant on the repository class.
+ * </p>
  *
- * @author Marko
+ * @author joachim, zain
  */
 
 public class SwitchBranchCommand extends Command {
+
+    /**
+     * This method switches the active branch from the repository module. If the branch is unavailable
+     * then don't switch.
+     * @author Joachim
+     * */
     @Override
     public void run(Map<String, String> arguments) {
         try {

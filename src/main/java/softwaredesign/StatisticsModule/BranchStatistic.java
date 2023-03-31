@@ -11,6 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class calculates the branch is responsible for calculating the most active branch
+ * statistic issued by the statistics framework.
+ * */
+
+//TODO: finish interface comment
 public class BranchStatistic extends GitStatistic {
     public BranchStatistic() {
         super("branches");

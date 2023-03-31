@@ -12,6 +12,15 @@ import java.util.Map;
  * The {@link Command#execute(String)} does the work of parsing the raw input using the protected argumentParser
  * instance, and then calling the {@link Command#run(Map)} template method implemented by the subclass.
  *
+ *  * <p>
+ *  *     classes inheriting from Command should be used in the following way: use  <a href=#@link>{@link Command#getName()}</a>
+ *  *     and register that name to the <a href=#@link>{@link CommandFramework}</a>. Then call
+ *  *     the  <a href=#@link>{@link Command#getDescription()}</a> to get the description
+ *  *     to be shown in a help menu, get  <a href=#@link>{@link Command#getUsage()}</a>
+ *  *     to be shown when the user makes an error with this command. and  <a href=#@link>{@link Command#run(Map)}</a>
+ *  *     to run the command.
+ *  * </p>
+ *
  * @author Zain
  */
 public abstract class Command implements Framework.Module {
@@ -20,6 +29,12 @@ public abstract class Command implements Framework.Module {
      * Subclasses should configure the arguments they need by calling methods on this instance.
      */
     protected ArgumentParser argumentParser = new ArgumentParser();
+
+    /**
+     * <p>This is a quick shortcut for the commands to access the repository</p>
+     * @return the current active repository
+     * @author Zain
+     * */
     protected Repository getRepository() {
         return Application.getInstance().getRepository();
     }
