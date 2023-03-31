@@ -207,7 +207,8 @@ public class Repository {
         if (cloneDir.list() != null && cloneDir.list().length > 0)
             name = cloneDir.list()[0];
         else {
-            throw new Error("no repository found in ./ClonedRepository"); //retry, cloning must have failed, because no actual cloned repo exists in the dir
+            throw new IOException("clone failed, check the url for spelling mistakes, and internet connection and try " +
+                    "again \n"); //retry, cloning must have failed, because no actual cloned repo exists in the dir
         }
         repositoryPath = clonePath + "/" + name;
         activeBranch = getCurrentBranchName();

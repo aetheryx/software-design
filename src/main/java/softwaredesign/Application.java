@@ -51,14 +51,17 @@ public class Application {
      * @author Joachim, Zain
      */
     public void run(){
-        initialiseRepository();
-
         this.commandFramework
                 .register(new StatisticCommand())
                 .register(new DeleteRepositoryCommand())
                 .register(new SwitchBranchCommand());
 
+        initialiseRepository();
         this.commandFramework.startCommandLoop();
+
+
+
+
     }
 
     /**
@@ -68,12 +71,14 @@ public class Application {
      *
      * @author Joachim
      * */
-    private void initialiseRepository(){
-        try {
-            repository = new Repository("https://github.com/Tysab/webtech-lab37-assign");
-            repository.switchActiveBranch("joa");
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+    public void initialiseRepository(){
+        repository = null;
+        while (repository == null) {
+            try {
+                repository = new Repository(TerminalIO.prompt("please enter the github URL of the repository you would like to investigate: \n"));
+            } catch (IOException | InterruptedException e) {
+                TerminalIO.write("git repository unavailable: " + e.getMessage() + "\n");
+            }
         }
     }
 
