@@ -26,7 +26,7 @@ public class ContributorStatistic extends GitStatistic {
     protected Table calculate(Map<String, String> arguments) {
         Table table = new Table("Contributor", "commits", "loc");
 
-        repository.getCommits()
+        getRepository().getCommits()
                 .stream()
                 .collect(Collectors.groupingBy(Commit::getAuthor))
                 .forEach((contributor, commits) -> {

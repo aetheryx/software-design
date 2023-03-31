@@ -14,7 +14,7 @@ public class WeekdayStatistic extends GitStatistic {
     public Table calculate(Map<String, String> arguments) {
         Table table = new Table("Weekday", "commits", "loc");
 
-        repository.getCommits()
+        getRepository().getCommits()
                 .stream()
                 .collect(Collectors.groupingBy(c -> c.getDate().getDayOfWeek()))
                 .forEach((weekday, commits) -> {

@@ -21,12 +21,12 @@ public class BranchStatistic extends GitStatistic {
         Table tableResult = new Table("branch", "commits", "loc");
         List<String> branchNames;
         try {
-            branchNames = repository.getBranchNames();
+            branchNames = getRepository().getBranchNames();
             for (int i = 0; i < branchNames.size(); i++) {
-                repository.switchActiveBranch(branchNames.get(i));
+                getRepository().switchActiveBranch(branchNames.get(i));
                 locsInBranches.putIfAbsent(branchNames.get(i), 0);
                 commitsInBranches.putIfAbsent(branchNames.get(i), 0);
-                for (Commit commit : repository.getCommits()) {
+                for (Commit commit : getRepository().getCommits()) {
                     locsInBranches.compute(commit.getBranch(), (k, v) -> v + commit.getDiffAdded() + commit.getDiffRemoved());
                     commitsInBranches.compute(commit.getBranch(), (k, v) -> v + 1);
                 }

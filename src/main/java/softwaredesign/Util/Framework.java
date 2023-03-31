@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @author Zain
  */
-public class Framework<T extends Framework.Module> {
+public abstract class Framework<T extends Framework.Module> {
     protected final Map<String, T> modules = new HashMap<>();
 
     /**

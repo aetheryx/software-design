@@ -22,7 +22,10 @@ import java.util.Map;
  */
 public abstract class Statistic implements Framework.Module {
     private String name;
-    protected Repository repository = Application.getInstance().getRepository();
+
+    protected Repository getRepository() {
+        return Application.getInstance().getRepository();
+    }
 
     public Statistic(String name) {
         this.name = name;
