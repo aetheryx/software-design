@@ -35,7 +35,7 @@ public abstract class Command implements Framework.Module {
     }
 
     /**
-     * Contains the actual runtme logic of the command; the code that is executed when a user
+     * Contains the actual runtime logic of the command; the code that is executed when a user
      * runs the command.
      *
      * @param arguments A map of parsed and validated arguments, based on
