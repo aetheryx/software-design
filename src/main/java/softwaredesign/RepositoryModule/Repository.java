@@ -1,13 +1,12 @@
 package softwaredesign.RepositoryModule;
 
-import java.io.IOException;
-import java.text.ParseException;
+import java.io.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import softwaredesign.UI.ProgressBar;
 import softwaredesign.UI.TerminalIO;
 
 
@@ -214,17 +213,45 @@ public class Repository {
         delete(); //make sure the folder is empty.
         gitHubURL = newGitHubURL;
 
-        String cloneCommand = "git clone --progress " + gitHubURL;
-        runGitCommand(cloneCommand, clonePath);
-        File cloneDir = new File(clonePath);
-        if (cloneDir.list() != null && cloneDir.list().length > 0)
-            name = cloneDir.list()[0];
-        else {
+        try {
+            this.cloneRepository();
+            File cloneDir = new File(clonePath);
+            if (cloneDir.list() != null && cloneDir.list().length > 0) {
+                name = cloneDir.list()[0];
+            } else {
+                throw new Exception("Clone dir is empty");
+            }
+        } catch (Exception err) {
             throw new IOException("clone failed, check the url for spelling mistakes, and internet connection and try " +
                     "again \n"); //retry, cloning must have failed, because no actual cloned repo exists in the dir
         }
+
         repositoryPath = clonePath + "/" + name;
         activeBranch = getCurrentBranchName();
+    }
+
+    private void cloneRepository() throws IOException {
+        ProgressBar progressBar = new ProgressBar("Cloning repository");
+        progressBar.start();
+
+        ProcessBuilder processBuilder = buildGitCommand("git clone --progress " + gitHubURL, clonePath);
+        processBuilder.redirectErrorStream(false);
+        Process process = processBuilder.start();
+
+        InputStream errorStream = process.getErrorStream();
+        InputStreamReader errorStreamReader = new InputStreamReader(errorStream);
+        BufferedReader bufferedReader = new BufferedReader(errorStreamReader);
+
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            if (!line.contains("Receiving objects")) continue;
+
+            String percentRaw = line.split(":")[1].split("%")[0].trim();
+            int percent = Integer.parseInt(percentRaw);
+            progressBar.setProgress(percent);
+        }
+
+        progressBar.finish("Cloned repository successfully!\n\n");
     }
 
     /**
