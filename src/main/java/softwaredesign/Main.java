@@ -3,13 +3,11 @@ package softwaredesign;
 import softwaredesign.RepositoryModule.Commit;
 import softwaredesign.RepositoryModule.Repository;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
     public static void main (String[] args){
-        System.out.println("Welcome to Software Design");
         Application application = Application.getInstance();
         application.run();
 //        testRepositoryModule();

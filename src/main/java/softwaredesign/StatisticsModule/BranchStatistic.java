@@ -9,16 +9,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * todo @joachim
+ * @author Joachim
+ */
 public class BranchStatistic extends GitStatistic {
-    public BranchStatistic() {
-        super("branches");
+    @Override
+    public String getName() {
+        return "branches";
     }
 
     @Override
     public Table calculate(Map<String, String> arguments) throws UserFacingException {
         Map<String, Integer> locsInBranches = new HashMap<>();
         Map<String, Integer> commitsInBranches = new HashMap<>();
-        Table tableResult = new Table("branch", "commits", "loc");
+        Table tableResult = new Table("Branch", "Commits", "LOC");
         List<String> branchNames;
         try {
             branchNames = getRepository().getBranchNames();

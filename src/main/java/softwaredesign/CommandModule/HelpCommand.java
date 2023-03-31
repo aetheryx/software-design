@@ -4,6 +4,10 @@ import softwaredesign.UI.TerminalIO;
 
 import java.util.Map;
 
+/**
+ * The help command. Registered by default by the command framework.<br />
+ * Allows users to receive a list of commands, or details on a specific command.
+ */
 public class HelpCommand extends Command {
     @Override
     public String getName() {

@@ -5,14 +5,24 @@ import softwaredesign.UI.Table;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the "Most Popular Weekday" statistic.<br />
+ *
+ * Fetches all commits on the current branch, groups the commits by weekday, and
+ * adds the relevant metrics to a table instance.<br />
+ *
+ * The returned table has <tt>Commits</tt> and <tt>LOC</tt> column headers, which can be sorted by.
+ * The sorting logic is taken care of by {@link Statistic#execute(Map)}.
+ */
 public class WeekdayStatistic extends GitStatistic {
-    public WeekdayStatistic() {
-        super("weekdays");
+    @Override
+    public String getName() {
+        return "weekdays";
     }
 
     @Override
     public Table calculate(Map<String, String> arguments) {
-        Table table = new Table("Weekday", "commits", "loc");
+        Table table = new Table("Weekday", "Commits", "LOC");
 
         getRepository().getCommits()
                 .stream()

@@ -1,30 +1,29 @@
 package softwaredesign.StatisticsModule;
 
-import softwaredesign.CommandModule.UserFacingException;
 import softwaredesign.RepositoryModule.Commit;
 import softwaredesign.UI.Table;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 /**
- * <p>
- *     This class is responsible for calculating a ranking for every contributor based on contribution. This ranking
- *     should have 2 sorting options: 1, ranked on lines added, 2, ranked by amount of commits. The class achieves this
- *     by interfacing with the <a href=#@link>{@link softwaredesign.RepositoryModule.Repository}</a> class to retrieve
- *     raw data about the github repository to use in calculations.
- * </p>
- * <p>
- *     The <a href=#@link>{@link ContributorStatistic#calculate(Map)}</a> method actually starts calculation of this
- *     statistic and calls on the <a href=#@link>{@link softwaredesign.UI.ProgressBar}</a>
- *     and the <a href=#@link>{@link softwaredesign.UI.TerminalIO}</a> to report on progress and results.
- * </p>
- * */
+ * Represents the "Most Active Contributors" statistic.<br />
+ *
+ * Fetches all commits on the current branch, groups the commits by author, and
+ * adds the relevant metrics to a table instance.<br />
+ *
+ * The returned table has <tt>Commits</tt> and <tt>LOC</tt> column headers, which can be sorted by.
+ * The sorting logic is taken care of by {@link Statistic#execute(Map)}.
+ */
 public class ContributorStatistic extends GitStatistic {
     @Override
+    public String getName() {
+        return "contributors";
+    }
+
+    @Override
     protected Table calculate(Map<String, String> arguments) {
-        Table table = new Table("Contributor", "commits", "loc");
+        Table table = new Table("Contributor", "Commits", "LOC");
 
         getRepository().getCommits()
                 .stream()
@@ -38,9 +37,5 @@ public class ContributorStatistic extends GitStatistic {
                 });
 
         return table;
-    }
-
-    public ContributorStatistic() {
-        super("contributors");
     }
 }
