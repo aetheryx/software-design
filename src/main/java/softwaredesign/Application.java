@@ -81,6 +81,4 @@ public class Application {
     public static Application getInstance() {
         return instance;
     }
-
-
 }
