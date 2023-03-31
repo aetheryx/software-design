@@ -59,7 +59,7 @@ public class ProgressBar {
      * @author ammar
      */
     public void finish(String result) {
-        TerminalIO.write("\r" + result);
+        TerminalIO.writeInPlace(result);
     }
 
 

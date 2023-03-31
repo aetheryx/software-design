@@ -232,7 +232,8 @@ public class Repository {
         repositoryPath = clonePath + "/" + name;
         activeBranch = getCurrentBranchName();
         switchActiveBranch(activeBranch);
-        TerminalIO.write("\rSuccessfully cloned repository.\n\n");
+        TerminalIO.writeInPlace("Successfully cloned repository.");
+        TerminalIO.write("\n\n");
     }
 
     private void cloneRepository() throws IOException, InterruptedException {

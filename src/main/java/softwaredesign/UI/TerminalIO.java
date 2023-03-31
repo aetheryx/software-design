@@ -24,6 +24,10 @@ public class TerminalIO {
         System.out.print(message);
     }
 
+    public static void writeInPlace(String message) {
+        write("\r" + message + " ".repeat(80 - message.length()));
+    }
+
     public static String prompt(String message) {
         write(message);
         return read();
