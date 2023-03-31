@@ -2,6 +2,7 @@ package softwaredesign.StatisticsModule;
 
 import softwaredesign.Application;
 import softwaredesign.CommandModule.StatisticCommand;
+import softwaredesign.CommandModule.UserFacingException;
 import softwaredesign.RepositoryModule.Repository;
 import softwaredesign.Util.Framework;
 
@@ -29,5 +30,5 @@ public abstract class Statistic implements Framework.Module {
         return this.name;
     }
 
-    public abstract void calculate(Map<String, String> arguments);
+    public abstract void calculate(Map<String, String> arguments) throws UserFacingException;
 }
