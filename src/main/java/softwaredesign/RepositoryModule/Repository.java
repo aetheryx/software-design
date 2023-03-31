@@ -1,11 +1,12 @@
 package softwaredesign.RepositoryModule;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.io.File;
-import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import softwaredesign.UI.TerminalIO;
 
@@ -48,7 +49,7 @@ public class Repository {
      * @author Joachim
      */
     private static class Branch {
-        static final String gitLogCommand = "git --no-pager log --stat --word-diff=porcelain";
+        static final String gitLogCommand = "git --no-pager log --stat --word-diff=porcelain --date=raw";
         static final String gitLogNCommitsCommand = "git rev-list --count "; // use with + branchName
         private Commit[] commits;
         private String branchName;
@@ -86,7 +87,8 @@ public class Repository {
             }
             String commitAuthorName = unparsedCommitLines[j].substring(8);
             j++;
-            String commitDate = unparsedCommitLines[j].substring(8);
+            String commitDateRaw = unparsedCommitLines[j].substring(8);
+            long commitDateUnix = Long.parseLong(commitDateRaw.split(" ")[0]);
             j += 2;
             String commitDescription = unparsedCommitLines[j].substring(4);
 
@@ -104,7 +106,18 @@ public class Repository {
                     }
                 }
             }
-            return new Commit(commitId, commitDescription, commitAuthorName, commitNumberOfLineAdditions,commitNumberOfLineDeletions, commitDate, branchName);
+            return new Commit(
+                commitId,
+                commitDescription,
+                commitAuthorName,
+                commitNumberOfLineAdditions,
+                commitNumberOfLineDeletions,
+                LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(commitDateUnix),
+                        TimeZone.getDefault().toZoneId()
+                ),
+                branchName
+            );
         }
 
         /**
