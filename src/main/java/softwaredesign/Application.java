@@ -45,7 +45,7 @@ public class Application {
     /**
      * The run method is our main function, its responsible for deciding what to do.
      * <p>
-     *     The run method calls <a href=#@link>{@link Repository#initialiseRepository}</a> when the user has not yet
+     *     The run method calls <a href=#@link>{@link Repository#Repository(String)}</a> when the user has not yet
      *     cloned a repository, and promptforCommand when the user has cloned a repository.
      * </p>
      * @author Joachim, Zain
@@ -72,14 +72,6 @@ public class Application {
         try {
             repository = new Repository("https://github.com/Tysab/webtech-lab37-assign");
             repository.switchActiveBranch("joa");
-            for (Commit commit : repository.getCommits()) {
-                System.out.println("--------------------------------");
-                System.out.println(String.format("    CommitID          = %s", commit.getId()));
-                System.out.println(String.format("    CommitAuthor      = %s", commit.getAuthor()));
-                System.out.println(String.format("    CommitDescription = %s", commit.getDescription()));
-                System.out.println(String.format("    CommitDiffAdded   = %d", commit.getDiffAdded()));
-                System.out.println(String.format("    CommitDiffRemoved = %d\n", commit.getDiffRemoved()));
-            }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

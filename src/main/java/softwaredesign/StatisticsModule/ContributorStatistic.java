@@ -28,18 +28,6 @@ public class ContributorStatistic extends GitStatistic {
         private int linesOfCodeChanged;
         private int nCommits;
 
-        public class LinesOfCodeComparator implements Comparator<Contributor>{
-            @Override
-            public int compare(Contributor contributor1, Contributor secondContributor) {
-                return contributor1.linesOfCodeChanged - secondContributor.linesOfCodeChanged;
-            }
-        }
-        public class CommitsComparator implements Comparator<Contributor>{
-            @Override
-            public int compare(Contributor contributor1, Contributor secondContributor) {
-                return contributor1.nCommits - secondContributor.nCommits;
-            }
-        }
         public Contributor(int newLinesOfCodeChanged, int newNCommits){
             nCommits = newNCommits;
             linesOfCodeChanged = newLinesOfCodeChanged;
@@ -52,6 +40,21 @@ public class ContributorStatistic extends GitStatistic {
             return nCommits;
         }
     }
+
+    private class LinesOfCodeComparator implements Comparator<Contributor>{
+        @Override
+        public int compare(Contributor contributor1, Contributor secondContributor) {
+            return contributor1.linesOfCodeChanged - secondContributor.linesOfCodeChanged;
+        }
+    }
+
+    private class CommitsComparator implements Comparator<Contributor>{
+        @Override
+        public int compare(Contributor contributor1, Contributor secondContributor) {
+            return contributor1.nCommits - secondContributor.nCommits;
+        }
+    }
+
     @Override
     public void calculate(Map<String, String> arguments) {
         List<Commit> commits = repository.getCommits();
@@ -75,7 +78,7 @@ public class ContributorStatistic extends GitStatistic {
 
         progressBar = new ProgressBar(RESULT_GENERATING_TASK_NAME, 20); //TODO: how long should this bar be?
         List<Contributor> contributorList = new ArrayList<>(contributors.values());
-        contributorList.sort(new Contributor.CommitsComparator());
+        contributorList.sort(new CommitsComparator());
         for (int i = 0; i < contributors.size(); i++) {
             progressBar.setProgress((float) i / (float)contributors.size());
             table.addEntry(); //TODO: add arguments
