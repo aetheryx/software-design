@@ -18,7 +18,7 @@ import java.util.Map;
 public class ArgumentParser {
     private Map<String, String[]> arguments = new HashMap<>();
 
-    public ArgumentParser addArgument(String name, String[] values){
+    public ArgumentParser addArgument(String name, String[] values) {
 
         if(!arguments.containsKey(name)){
             arguments.put(name, values);
@@ -30,8 +30,11 @@ public class ArgumentParser {
         return this;
     }
 
-    public Map<String, String> parse (String input){
+    public Map<String, String> parse(String input) {
+        return this.parseRaw(input);
+    }
 
+    private Map<String, String> parseRaw (String input){
         Map<String, String> parsedArguments = new HashMap<>();
 
         String[] inputArgs = input.trim().split(" ");

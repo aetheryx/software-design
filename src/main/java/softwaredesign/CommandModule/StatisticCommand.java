@@ -26,7 +26,7 @@ public class StatisticCommand extends Command {
     }
 
     @Override
-    public void run(Map<String, String> arguments) {
+    public void run(Map<String, String> arguments) throws UserFacingException {
         String statisticName = arguments.get("name");
         this.statisticFramework.runStatistic(statisticName, arguments);
     }
