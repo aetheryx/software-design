@@ -1,5 +1,6 @@
 package softwaredesign.StatisticsModule;
 
+import softwaredesign.CommandModule.UserFacingException;
 import softwaredesign.Util.Framework;
 
 import java.util.Map;
@@ -33,7 +34,7 @@ public class StatisticFramework extends Framework<Statistic> {
         return this;
     }
 
-    public void runStatistic(String statisticName, Map<String, String> arguments) {
+    public void runStatistic(String statisticName, Map<String, String> arguments) throws UserFacingException {
         Statistic statistic = this.getModule(statisticName);
         statistic.calculate(arguments);
     }

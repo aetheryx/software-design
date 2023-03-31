@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Table {
     private final List<String> headers;
-    private final List<List<String>> values;
+    private final List<List<Object>> values;
 
     public Table(String... inHeaders) {
         this.headers = Arrays.asList(inHeaders);
@@ -28,11 +28,18 @@ public class Table {
      * </p>
      * @author Ammar
      */
-    public void addEntry(String... entry) {
-        if (entry.length != headers.size()) {
+    public void addEntry(Object... entries) {
+        if (entries.length != headers.size()) {
             throw new IllegalArgumentException("Entry length should match header length");
         }
-        values.add(Arrays.asList(entry));
+
+        for (Object entry : entries) {
+            if (!(entry instanceof String) && !(entry instanceof Integer)) {
+                throw new IllegalArgumentException("Entries should all be strings or integers");
+            }
+        }
+
+        values.add(Arrays.asList(entries));
     }
 
     /**
@@ -47,8 +54,8 @@ public class Table {
         int[] colWidths = new int[headers.size()];
         for (int i = 0; i < headers.size(); i++) {
             int maxWidth = headers.get(i).length();
-            for (List<String> row : values) {
-                int entryWidth = row.get(i).length();
+            for (List<Object> row : values) {
+                int entryWidth = row.get(i).toString().length();
                 if (entryWidth > maxWidth) {
                     maxWidth = entryWidth;
                 }
@@ -97,10 +104,10 @@ public class Table {
         tableString.append("\n");
 
 
-        for (List<String> row : values) {
+        for (List<Object> row : values) {
             tableString.append("|");
             for (int i = 0; i < row.size(); i++) {
-                String entry = row.get(i);
+                String entry = row.get(i).toString();
                 tableString.append(entry);
                 tableString.append(" ".repeat(columnWidths[i] - entry.length()));
                 tableString.append("|");
@@ -116,5 +123,22 @@ public class Table {
         tableString.append("\n");
 
         return tableString.toString();
+    }
+
+    public void sort(String headerField) {
+        int index = this.headers.indexOf(headerField);
+        if (index == -1) {
+            throw new IllegalArgumentException("Header field not found in this table's headers");
+        }
+
+        this.values.sort((a, b) -> {
+            var valA = a.get(index);
+            var valB = b.get(index);
+            if (!(valA instanceof Integer) || !(valB instanceof Integer)) {
+                throw new IllegalArgumentException("Table values of this header field are not integers");
+            }
+
+            return Integer.compare((Integer) valB, (Integer) valA);
+        });
     }
 }
