@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Represents a statistic that can be calculated on a GitHub repository.
- * Contains a name property, which is the name of the statistic (e.g. “most-active-contributors”), which the
+ * Contains a name property, which is the name of the statistic (e.g. most-active-contributors), which the
  * {@link StatisticCommand} uses to select this statistic based on the user’s input string.
  * The calculation of the statistic happens in the {@link Statistic#calculate(Map)} method.
  *

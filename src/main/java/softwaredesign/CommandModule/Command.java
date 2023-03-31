@@ -1,5 +1,7 @@
 package softwaredesign.CommandModule;
 
+import softwaredesign.Application;
+import softwaredesign.RepositoryModule.Repository;
 import softwaredesign.Util.Framework;
 
 import java.util.Map;
@@ -18,6 +20,9 @@ public abstract class Command implements Framework.Module {
      * Subclasses should configure the arguments they need by calling methods on this instance.
      */
     protected ArgumentParser argumentParser = new ArgumentParser();
+    protected Repository getRepository() {
+        return Application.getInstance().getRepository();
+    }
 
     /**
      * Prepares the arguments for this command, and then runs the command.

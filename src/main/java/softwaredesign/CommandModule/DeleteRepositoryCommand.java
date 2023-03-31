@@ -1,5 +1,9 @@
 package softwaredesign.CommandModule;
 
+import softwaredesign.Application;
+import softwaredesign.UI.TerminalIO;
+
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -9,27 +13,34 @@ import java.util.Map;
 
 public class DeleteRepositoryCommand extends Command {
     @Override
-    public void run(Map<String, String> arguments) {
-
+    public void run(Map<String, String> arguments) throws UserFacingException {
+        try {
+            getRepository().delete();
+            Application.getInstance().initialiseRepository();
+            TerminalIO.write("deletion successful \n");
+        } catch (IOException e) {
+            throw new UserFacingException("the repository cannot be deleted at this time, check if the file is open " +
+                    "in another program");
+        }
     }
 
     @Override
     public String getDescription() {
-        return "wip placeholder";
+        return "deletes the repository files from disk, and returns you to the repository cloning phase";
     }
 
     @Override
     public String getUsage() {
-        return "wip placeholder";
+        return "delete";
     }
 
     @Override
     public String getExamples() {
-        return "wip placeholder";
+        return "delete";
     }
 
     @Override
     public String getName() {
-        return "delete-repository";
+        return "delete";
     }
 }
