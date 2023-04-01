@@ -1,6 +1,4 @@
-package softwaredesign.StatisticsModule;
-
-import java.util.Map;
+package softwaredesign.statistics;
 
 /**
  * An abstract class that implements the Statistic interface.
@@ -10,7 +8,4 @@ import java.util.Map;
  * @author Zain
  */
 public abstract class GitStatistic extends Statistic {
-    public GitStatistic(String name) {
-        super(name);
-    }
 }

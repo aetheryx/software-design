@@ -1,7 +1,7 @@
-package softwaredesign.StatisticsModule;
+package softwaredesign.statistics;
 
-import softwaredesign.CommandModule.UserFacingException;
-import softwaredesign.Util.Framework;
+import softwaredesign.commands.UserFacingException;
+import softwaredesign.util.Framework;
 
 import java.util.Map;
 

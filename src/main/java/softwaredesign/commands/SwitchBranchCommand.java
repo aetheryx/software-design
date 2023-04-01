@@ -1,6 +1,4 @@
-package softwaredesign.CommandModule;
-
-import softwaredesign.UI.TerminalIO;
+package softwaredesign.commands;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,11 +25,11 @@ public class SwitchBranchCommand extends Command {
      * @author Joachim
      * */
     @Override
-    public void run(Map<String, String> arguments) {
+    public void run(Map<String, String> arguments) throws UserFacingException {
         try {
             getRepository().switchActiveBranch(arguments.get("branch"));
         } catch (IOException | InterruptedException e) {
-            TerminalIO.write("branch unavailable: " + e.getMessage() + "\n");
+            throw new UserFacingException("branch unavailable: " + e.getMessage() + "\n");
         }
     }
 
@@ -43,11 +41,6 @@ public class SwitchBranchCommand extends Command {
     @Override
     public String getDescription() {
         return "switches the active branch to calculate statistics on a different branch";
-    }
-
-    @Override
-    public String getUsage() {
-        return "usage: switch-branch --branch=<INSERT BRANCHNAME>";
     }
 
     @Override
