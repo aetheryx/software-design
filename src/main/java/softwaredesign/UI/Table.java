@@ -1,4 +1,4 @@
-package softwaredesign.UI;
+package softwaredesign.ui;
 
 import java.util.*;
 

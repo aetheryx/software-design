@@ -1,7 +1,7 @@
-package softwaredesign.CommandModule;
+package softwaredesign.commands;
 
 import softwaredesign.Application;
-import softwaredesign.UI.TerminalIO;
+import softwaredesign.ui.TerminalIO;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,11 +27,6 @@ public class DeleteRepositoryCommand extends Command {
     @Override
     public String getDescription() {
         return "deletes the repository files from disk, and returns you to the repository cloning phase";
-    }
-
-    @Override
-    public String getUsage() {
-        return "delete";
     }
 
     @Override

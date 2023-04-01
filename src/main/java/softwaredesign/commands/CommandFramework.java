@@ -1,7 +1,7 @@
-package softwaredesign.CommandModule;
+package softwaredesign.commands;
 
-import softwaredesign.UI.TerminalIO;
-import softwaredesign.Util.Framework;
+import softwaredesign.ui.TerminalIO;
+import softwaredesign.util.Framework;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,9 @@ import java.util.Map;
  */
 public class CommandFramework extends Framework<Command> {
     public CommandFramework() {
-        this.register(new HelpCommand(this));
+        this
+                .register(new HelpCommand(this))
+                .register(new ExitCommand(this));
     }
 
     private boolean commandLoopActive = false;
@@ -33,14 +35,17 @@ public class CommandFramework extends Framework<Command> {
         }
     }
 
+    public void exitCommandLoop() {
+        this.commandLoopActive = false;
+    }
+
     private void commandLoop() {
         try {
             this.promptForCommand();
         } catch (UserFacingException userFacingException) {
             userFacingException.print();
         } catch (Exception exception) {
-            TerminalIO.write("The application encountered an unexpected error: \n");
-            exception.printStackTrace(System.out);
+            TerminalIO.printException(exception);
         }
     }
 

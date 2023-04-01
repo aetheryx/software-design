@@ -1,4 +1,6 @@
-package softwaredesign.RepositoryModule;
+package softwaredesign.repository;
+
+import java.time.LocalDateTime;
 
 /**
  * This class is a datastructure to store commit data, which is its only responsibility
@@ -7,13 +9,12 @@ package softwaredesign.RepositoryModule;
  * </p>
  */
 public class Commit {
-
     private String id;
     private String description;
     private String author;
     private int diffAdded;
     private int diffRemoved;
-    private String date;
+    private LocalDateTime date;
 
     private String branch;
 
@@ -23,7 +24,7 @@ public class Commit {
      * </p>
      * @returns the commit created
      */
-    public Commit(String newID, String newDescription, String newAuthor, int newDiffAdded, int newDiffRemoved, String newDate, String newBranch){
+    public Commit(String newID, String newDescription, String newAuthor, int newDiffAdded, int newDiffRemoved, LocalDateTime newDate, String newBranch){
         id = newID;
         description = newDescription;
         author = newAuthor;
@@ -98,20 +99,20 @@ public class Commit {
 
     /**
      * <p>
-     *  gets the unparsed date in git log's date format.
+     *  gets the parsed date from git log's date format.
      * </p>
-     * @returns a String containing date.
+     * @returns the date of the commit
      * @author Joachim
      */
-    public String getDate(){ return date; }
+    public LocalDateTime getDate(){ return date; }
 
     public String toString(){
         String toReturn = "";
-        toReturn += String.format("    CommitID          = %s\n", getId());
-        toReturn += String.format("    CommitAuthor      = %s\n", getAuthor());
-        toReturn += String.format("    CommitDescription = %s\n", getDescription());
-        toReturn += String.format("    CommitDiffAdded   = %d\n", getDiffAdded());
-        toReturn += String.format("    CommitDiffRemoved = %d\n", getDiffRemoved());
+        toReturn += String.format("    CommitID          = %s%n", getId());
+        toReturn += String.format("    CommitAuthor      = %s%n", getAuthor());
+        toReturn += String.format("    CommitDescription = %s%n", getDescription());
+        toReturn += String.format("    CommitDiffAdded   = %d%n", getDiffAdded());
+        toReturn += String.format("    CommitDiffRemoved = %d%n", getDiffRemoved());
         return toReturn;
     }
 }

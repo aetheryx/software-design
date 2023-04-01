@@ -1,14 +1,13 @@
-package softwaredesign.UI;
+package softwaredesign.ui;
 
 public class ProgressBar {
-    private static String taskName;
-    private static int progress;
-    private static final int barWidth = 35;
+    private String taskName;
+    private int progress = 0;
+    private static final int BAR_WIDTH = 35;
 
 
     public ProgressBar(String myTaskName) {
         taskName = myTaskName;
-        progress = 0;
     }
 
     /**
@@ -20,11 +19,11 @@ public class ProgressBar {
      * @author Ammar
      */
     public void start() {
-        System.out.print(taskName + ": [");
-        for (int i = 0; i < barWidth; i++) {
-            System.out.print("░");
+        TerminalIO.write(taskName + ": [");
+        for (int i = 0; i < BAR_WIDTH; i++) {
+            TerminalIO.write(" ");
         }
-        System.out.print("] 0%");
+        TerminalIO.write("] 0%");
     }
 
     /**
@@ -34,16 +33,21 @@ public class ProgressBar {
      * </p>
      * @author Ammar
      */
-    public void setProgress(float percent) {
-        progress = (int) (percent * barWidth / 100);
-        System.out.print("\r" + taskName + ": [");
+    public void setProgress(int newProcent) {
+        int newProgress = (newProcent * BAR_WIDTH / 100);
+        if (progress == newProgress) {
+            return;
+        }
+
+        progress = newProgress;
+        TerminalIO.write("\r" + taskName + ": [");
         for (int i = 0; i < progress; i++) {
-            System.out.print("█");
+            TerminalIO.write("█");
         }
-        for (int i = progress; i < barWidth; i++) {
-            System.out.print(" ");
+        for (int i = progress; i < BAR_WIDTH; i++) {
+            TerminalIO.write(" ");
         }
-        System.out.print("] " + (int) percent + "%");
+        TerminalIO.write("] " + newProcent + "%");
     }
 
     /**
@@ -55,14 +59,11 @@ public class ProgressBar {
      * @author ammar
      */
     public void finish(String result) {
-        System.out.print("\r" + taskName + ": [");
-        for (int i = 0; i < barWidth; i++) {
-            System.out.print("█");
-        }
-        System.out.print("] 100%\r");
-        System.out.println(result);
-        System.out.println("\r");
+        TerminalIO.writeInPlace(result);
+    }
 
 
+    public void finish() {
+        this.finish(" \r");
     }
 }

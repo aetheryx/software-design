@@ -1,8 +1,8 @@
-package softwaredesign.CommandModule;
-import softwaredesign.StatisticsModule.*;
-import softwaredesign.UI.TerminalIO;
+package softwaredesign.commands;
+import softwaredesign.statistics.*;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is going to initiate the Statistic calculation.
@@ -18,11 +18,11 @@ public class StatisticCommand extends Command {
 
     public StatisticCommand() {
         this.argumentParser
-                .addArgument("name", statisticFramework.getModuleNames())
-                .addArgument("sort-by", new String[] {
-                    "commits",
-                    "loc"
-                });
+                .addRequiredArgument("name", statisticFramework.getModuleNames())
+                .addOptionalArgument("sort-by", Set.of(
+                        "commits",
+                        "loc"
+                ));
     }
 
     @Override
@@ -39,11 +39,6 @@ public class StatisticCommand extends Command {
     @Override
     public String getDescription() {
         return "Allows you to view various statistics of the Git repository.";
-    }
-
-    @Override
-    public String getUsage() {
-        return "<--name=contributors,branches,...> [--sort-by=loc,commits]";
     }
 
     @Override
