@@ -3,7 +3,12 @@ package softwaredesign.commands;
 import softwaredesign.ui.TerminalIO;
 
 import java.util.Map;
-
+/**
+ * This class is going to initiate the deletion of the locally copied repository, and exits the program.
+ * This class follows the structure of the <a href="#@link">{@link Command}</a> fitting
+ * inside the <a href="#@link">{@link CommandFramework}</a>.
+ * @author Zain
+ */
 public class ExitCommand extends Command {
     @Override
     public String getName() {
