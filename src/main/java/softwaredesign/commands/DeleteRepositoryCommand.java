@@ -30,8 +30,8 @@ public class DeleteRepositoryCommand extends Command {
     public void run(Map<String, String> arguments) throws UserFacingException {
         try {
             getRepository().delete();
+            TerminalIO.write("Deletion successful.\n\n");
             Application.getInstance().initialiseRepository();
-            TerminalIO.write("deletion successful \n");
         } catch (IOException e) {
             throw new UserFacingException("the repository cannot be deleted at this time, check if the file is open " +
                     "in another program");

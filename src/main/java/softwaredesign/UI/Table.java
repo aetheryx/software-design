@@ -5,9 +5,10 @@ import java.util.*;
 
 /**
  * <p>
- *     A utility class that can be used to easily generate ASCII tables.
- *      The class is constructed with a list of table headers.
+ * A utility class that can be used to easily generate ASCII tables.
+ * The class is constructed with a list of table headers.
  * </p>
+ *
  * @author Ammar
  */
 
@@ -23,9 +24,10 @@ public class Table {
 
     /**
      * <p>
-     *     addEntry() method takes a variable amount of arguments, the
-     *      amount of arguments should be the length of the table header.
+     * addEntry() method takes a variable amount of arguments, the
+     * amount of arguments should be the length of the table header.
      * </p>
+     *
      * @author Ammar
      */
     public void addEntry(Object... entries) {
@@ -44,11 +46,11 @@ public class Table {
 
     /**
      * <p>
-     *     calcColWidth() is a method that will calculate the maximum width of the strings to
-     *     make the table as organized as possible.
+     * calcColWidth() is a method that will calculate the maximum width of the strings to
+     * make the table as organized as possible.
      * </p>
-     * @author Ammar
      *
+     * @author Ammar
      */
     private int[] calcColWidth() {
         int[] colWidths = new int[headers.size()];
@@ -67,11 +69,11 @@ public class Table {
 
     /**
      * <p>
-     *     toString() method can be called to generate an
-     *      ASCII table.
+     * toString() method can be called to generate an
+     * ASCII table.
      * </p>
-     * @author Ammar
      *
+     * @author Ammar
      */
     public String toString() {
         StringBuilder tableString = new StringBuilder();
