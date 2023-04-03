@@ -62,12 +62,12 @@ public class Repository {
          * @author Joachim
          */
         public String getName(){
-            return branchName
+            return branchName;
         }
 
         /**
          * <p>This function parses one raw commit from git log --stat, Commits should be split off before they are passed
-         * to this function and this function should be called seperately. This function is intended to work with
+         * to this function and this function should be called separately. This function is intended to work with
          * <a href=#@link> {@link Repository.Branch#processGitLog(Repository)}</a></p>
          * @param unparsedCommit the raw string of the commit in the git log format.
          * @return returns an instance of commit with their values set appropriately.

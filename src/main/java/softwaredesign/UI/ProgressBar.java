@@ -11,26 +11,26 @@ public class ProgressBar {
     }
 
     /**
-     * <p>
-     *     This class is constructed with a string argument taskName(), which is displayed to the user
-     *      when the progress bar is started. This starting process happens with the start() method.
+     * This class is constructed with a string argument taskName(), which is displayed to the user
+     * when the progress bar is started. This starting process happens with the start() method.
      *
-     * </p>
      * @author Ammar
      */
     public void start() {
-        TerminalIO.write(taskName + ": [");
-        for (int i = 0; i < BAR_WIDTH; i++) {
-            TerminalIO.write(" ");
-        }
-        TerminalIO.write("] 0%");
+        TerminalIO.write(
+                taskName
+                        + ": ["
+                        + (" ".repeat(BAR_WIDTH))
+                        + "] 0%"
+        );
     }
 
     /**
      * <p>
-     *     The method used to increment the progress bar is called setProgress(), which takes a single
-     *      float argument, which is the percentage the bar should be updated to.
+     * The method used to increment the progress bar is called setProgress(), which takes a single
+     * float argument, which is the percentage the bar should be updated to.
      * </p>
+     *
      * @author Ammar
      */
     public void setProgress(int newProcent) {
@@ -40,22 +40,21 @@ public class ProgressBar {
         }
 
         progress = newProgress;
-        TerminalIO.write("\r" + taskName + ": [");
-        for (int i = 0; i < progress; i++) {
-            TerminalIO.write("█");
-        }
-        for (int i = progress; i < BAR_WIDTH; i++) {
-            TerminalIO.write(" ");
-        }
-        TerminalIO.write("] " + newProcent + "%");
+        TerminalIO.writeInPlace(
+                taskName + ": [" +
+                        "█".repeat(progress) +
+                        " ".repeat(BAR_WIDTH - progress)
+                        + "] " + newProcent + "%"
+        );
     }
 
     /**
      * <p>
-     *     Once the calculation of results is done, the finish() method should be called, which takes a
-     *      string input argument. In this method, the progress bar is cleared from the terminal and the
-     *      given result is printed.
+     * Once the calculation of results is done, the finish() method should be called, which takes a
+     * string input argument. In this method, the progress bar is cleared from the terminal and the
+     * given result is printed.
      * </p>
+     *
      * @author ammar
      */
     public void finish(String result) {
