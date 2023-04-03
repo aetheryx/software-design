@@ -231,7 +231,7 @@ public class Repository {
 
         activeBranch = getCurrentBranchName();
         switchActiveBranch(activeBranch);
-        TerminalIO.writeInPlace("Successfully cloned repository.");
+        TerminalIO.writeInPlace("Successfully cloned repository. Use \"help\" to get started.");
         TerminalIO.write("\n\n");
     }
 

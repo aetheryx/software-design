@@ -13,6 +13,11 @@ import java.util.Map;
  * @author Marko, Joachim
  */
 public class DeleteRepositoryCommand extends Command {
+    @Override
+    public String getName() {
+        return "delete";
+    }
+
     /**
      * <p>check {@link Command#run(Map)} for more info</p>
      * <p>
@@ -35,16 +40,6 @@ public class DeleteRepositoryCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Deletes the repository files from disk, and returns you to the repository cloning phase";
-    }
-
-    @Override
-    public String getExamples() {
-        return "delete";
-    }
-
-    @Override
-    public String getName() {
-        return "delete";
+        return "Deletes the repository files from disk, and returns you to the repository cloning phase.";
     }
 }

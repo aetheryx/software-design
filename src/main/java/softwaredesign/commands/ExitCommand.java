@@ -34,14 +34,6 @@ public class ExitCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Allows you to view various statistics of the Git repository.";
-    }
-
-    @Override
-    public String getExamples() {
-        return "statistic --name=contributors\n" +
-                "statistic --name=contributors --sort-by=loc\n" +
-                "statistic --name=weekdays --sort-by=commits\n" +
-                "statistic --name=issues";
+        return "Exits the application.";
     }
 }

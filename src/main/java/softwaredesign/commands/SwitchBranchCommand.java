@@ -18,6 +18,11 @@ import java.util.Map;
  */
 
 public class SwitchBranchCommand extends Command {
+    @Override
+    public String getName() {
+        return "switch-branch";
+    }
+
     public SwitchBranchCommand() {
         this.argumentParser.addRequiredArgument("branch", null);    // Add the required "branch" argument, which can be any string
     }
@@ -42,18 +47,15 @@ public class SwitchBranchCommand extends Command {
             throw new UserFacingException(e.getMessage()); // switchActiveBranch throws for invalid branch names
         }
     }
-    @Override
-    public String getName() {
-        return "switch-branch";
-    }
 
     @Override
     public String getDescription() {
-        return "Switches the active branch to calculate statistics on a different branch";
+        return "Switches the active branch to calculate statistics on a different branch.";
     }
 
     @Override
     public String getExamples() {
-        return "switch-branch --branch=main";
+        return "switch-branch --branch=main, " +
+                "switch-branch --branch=development";
     }
 }
