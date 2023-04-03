@@ -33,10 +33,10 @@ import softwaredesign.ui.TerminalIO;
  *  @author Joachim
  */
 public class Repository {
-    private static final String clonePath = "./ClonedRepository/";
-    static final String gitGetBranchNameCommand = "git rev-parse --abbrev-ref HEAD";
-    static final String GET_ALL_BRANCHES_COMMAND = "git branch -r";
-    private String repositoryPath;
+    private static final String CLONE_PATH = "./ClonedRepository/";
+    static final String GIT_GET_BRANCH_NAME_COMMAND = "git rev-parse --abbrev-ref HEAD";
+    static final String GET_ALL_BRANCHES_COMMAND = "git --no-pager branch -r";
+    private File repositoryRoot;
 
     /**
      * This class is responsible for storing the commits from a gitlog and for populating these commits.
@@ -48,8 +48,8 @@ public class Repository {
      * @author Joachim
      */
     private static class Branch {
-        static final String gitLogCommand = "git --no-pager log --stat --word-diff=porcelain --date=raw";
-        static final String gitLogNCommitsCommand = "git rev-list --count "; // use with + branchName
+        static final String GIT_LOG_COMMAND = "git --no-pager log --stat --word-diff=porcelain --date=raw";
+        static final String GIT_LOG_N_COMMITS_COMMAND = "git rev-list --count "; // use with + branchName
         private Commit[] commits;
         private String branchName;
         public Branch(String newBranchName){
@@ -92,30 +92,35 @@ public class Repository {
             String commitDescription = unparsedCommitLines[j].substring(4);
 
             //now for the line additions and removals
-            if (!commitIsAMerge){
-                String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
-                for (String change : commitChanges) {
-                    String number = change.split(" ")[0];
-                    if (change.contains("-")){
-                        //deletion
-                        commitNumberOfLineDeletions = Integer.parseInt(number);
-                    } else if (change.contains("+")) {
-                        //addition
-                        commitNumberOfLineAdditions = Integer.parseInt(number);
+            try {
+                if (!commitIsAMerge) {
+                    String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
+                    for (String change : commitChanges) {
+                        String number = change.split(" ")[0];
+                        if (change.contains("-")) {
+                            //deletion
+                            commitNumberOfLineDeletions = Integer.parseInt(number);
+                        } else if (change.contains("+")) {
+                            //addition
+                            commitNumberOfLineAdditions = Integer.parseInt(number);
+                        }
                     }
                 }
             }
+            catch(NumberFormatException e){
+                //do nothing, this is an empty commit, and therefore should leave changes at 0.
+            }
             return new Commit(
-                commitId,
-                commitDescription,
-                commitAuthorName,
-                commitNumberOfLineAdditions,
-                commitNumberOfLineDeletions,
-                LocalDateTime.ofInstant(
-                        Instant.ofEpochSecond(commitDateUnix),
-                        TimeZone.getDefault().toZoneId()
-                ),
-                branchName
+                    commitId,
+                    commitDescription,
+                    commitAuthorName,
+                    commitNumberOfLineAdditions,
+                    commitNumberOfLineDeletions,
+                    LocalDateTime.ofInstant(
+                            Instant.ofEpochSecond(commitDateUnix),
+                            TimeZone.getDefault().toZoneId()
+                    ),
+                    branchName
             );
         }
 
@@ -130,13 +135,13 @@ public class Repository {
         public void processGitLog(Repository repository) throws IOException, InterruptedException {
             //executing git log
             String gitLogOutput;
-            String nCommitsCommandOutput = Repository.getGitCommandOutput(gitLogNCommitsCommand + branchName, repository.repositoryPath);
+            String nCommitsCommandOutput = Repository.getGitCommandOutput(GIT_LOG_N_COMMITS_COMMAND + branchName, repository.repositoryRoot);
 
             int nCommits = Integer.parseInt(nCommitsCommandOutput.substring(0, nCommitsCommandOutput.length() - 1));
-            gitLogOutput = Repository.getGitCommandOutput(gitLogCommand, repository.repositoryPath);
+            gitLogOutput = Repository.getGitCommandOutput(GIT_LOG_COMMAND, repository.repositoryRoot);
 
             //parsing git log
-            String[] unparsedCommits = new String[nCommits];
+            String[] unparsedCommits;
             commits = new Commit[nCommits];
             unparsedCommits = gitLogOutput.split("\ncommit ");
 
@@ -169,25 +174,22 @@ public class Repository {
      * */
     private String getCurrentBranchName() throws IOException, InterruptedException {
         //this method is not very deep, but it removes some duplicate code
-        return getGitCommandOutput(gitGetBranchNameCommand, repositoryPath).replace("\n","");
+        return getGitCommandOutput(GIT_GET_BRANCH_NAME_COMMAND, repositoryRoot).replace("\n","");
     }
-    private static ProcessBuilder buildGitCommand(String command, String workingDir){
+
+    /**
+     * creates git process, and returns the stdout of the process.
+     * @param command the git command you could enter in the terminal.
+     * @param workingDir the directory the command should be executed in File format.
+     * */
+    private static String getGitCommandOutput(String command, File workingDir) throws IOException, InterruptedException {
         ProcessBuilder gitCommandBuilder = new ProcessBuilder(command.split(" "));
-        gitCommandBuilder.directory(new File(workingDir));
+        gitCommandBuilder.directory(workingDir);
         gitCommandBuilder.redirectErrorStream(true);
-        return gitCommandBuilder;
-    }
-    private static String getGitCommandOutput(String command, String workingDir) throws IOException, InterruptedException {
-        ProcessBuilder gitCommandBuilder = buildGitCommand(command,workingDir);
         Process gitCommandProcess = gitCommandBuilder.start();
         String result = new String(gitCommandProcess.getInputStream().readAllBytes());
         gitCommandProcess.waitFor();
         return result;
-    }
-    private static void runGitCommand(String command, String workingDir) throws IOException, InterruptedException {
-        ProcessBuilder gitCommandBuilder = buildGitCommand(command,workingDir);
-        gitCommandBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        gitCommandBuilder.start().waitFor();
     }
 
     /**
@@ -214,18 +216,19 @@ public class Repository {
 
         try {
             this.cloneRepository();
-            File cloneDir = new File(clonePath);
+            File cloneDir = new File(CLONE_PATH);
             if (cloneDir.list() != null && cloneDir.list().length > 0) {
                 name = cloneDir.list()[0];
             } else {
-                throw new Exception("Clone dir is empty");
+                throw new IOException("Clone dir is empty");
             }
-        } catch (Exception err) {
+            repositoryRoot = new File(CLONE_PATH, name);
+        } catch (IOException err) {
             throw new IOException("clone failed, check the url for spelling mistakes, and internet connection and try " +
                     "again \n"); //retry, cloning must have failed, because no actual cloned repo exists in the dir
         }
 
-        repositoryPath = clonePath + "/" + name;
+
         activeBranch = getCurrentBranchName();
         switchActiveBranch(activeBranch);
         TerminalIO.writeInPlace("Successfully cloned repository.");
@@ -236,7 +239,10 @@ public class Repository {
         ProgressBar progressBar = new ProgressBar("Cloning repository");
         progressBar.start();
 
-        ProcessBuilder processBuilder = buildGitCommand("git clone --progress " + gitHubURL, clonePath);
+        ProcessBuilder processBuilder = new ProcessBuilder(("git clone --progress " + gitHubURL).split(" "));
+        processBuilder.directory(new File(CLONE_PATH));
+        processBuilder.redirectErrorStream(true);
+
         processBuilder.redirectErrorStream(false);
         Process process = processBuilder.start();
 
@@ -284,15 +290,25 @@ public class Repository {
      *               the default branch will be switched to.
      * @author Joachim
      * */
-    public void switchActiveBranch(String branch) throws IOException, InterruptedException {
+    @SuppressWarnings("java:S3824") //check line 295
+    public void switchActiveBranch(String branch) throws IOException, InterruptedException, IllegalArgumentException {
         //if the branch has not already been examined by the user before, make a new one, else switch to the stored branch
         String checkoutCommand = "git checkout " + branch;
-        getGitCommandOutput(checkoutCommand, repositoryPath);
-        if(!branches.containsKey(branch)){
-            branches.put(branch, new Branch(branch));
-            branches.get(branch).processGitLog(this);
+        List<String> possibleBranches = getBranchNames();
+        if (possibleBranches.contains(branch)) {
+            getGitCommandOutput(checkoutCommand, repositoryRoot);
+
+            //Sonarlint complains about the following line telling me that I should use computeIfAbsent, we cannot use
+            //this due to anonymous functions not being allowed to throw errors that processGitLog() thows.
+            if (!branches.containsKey(branch)) {
+                branches.put(branch, new Branch(branch));
+                branches.get(branch).processGitLog(this);
+            }
+            activeBranch = getCurrentBranchName();
         }
-        activeBranch = getCurrentBranchName();
+        else {
+            throw new IllegalArgumentException("no branch exists with this name");
+        }
     }
 
     /**
@@ -314,7 +330,11 @@ public class Repository {
      */
     public void delete() throws IOException {
         //method is not very deep, but it does hide the information of the repository file structure to the other classes.
-        FileUtils.cleanDirectory(new File(clonePath));
+        File cloneFolder = new File(CLONE_PATH);
+        if (!cloneFolder.exists()){
+            cloneFolder.mkdir();
+        }
+        FileUtils.cleanDirectory(new File(CLONE_PATH));
     }
 
     /**
@@ -327,19 +347,19 @@ public class Repository {
      * @throws InterruptedException if the interfacing with git is interrupted.
      * */
     public List<String> getBranchNames() throws IOException, InterruptedException {
-        List<String> branches = new ArrayList<>();
-        String allBranches = getGitCommandOutput(GET_ALL_BRANCHES_COMMAND, repositoryPath);
+        List<String> branchNames = new ArrayList<>();
+        String allBranches = getGitCommandOutput(GET_ALL_BRANCHES_COMMAND, repositoryRoot);
 
         //parse branchnames
-        String[] unparsedBranches = allBranches.split("\n  origin/");
+        String[] unparsedBranches = allBranches.split("\n {2}origin/");
 
         //remove \n at the last branchname
         if(unparsedBranches.length > 0) unparsedBranches[unparsedBranches.length - 1] = unparsedBranches[unparsedBranches.length - 1].replace("\n", "");
         for (String branch : unparsedBranches) { //add the branchnames one by one.
             if (!branch.contains("HEAD")){ //make sure this branch is removed, I dont know what this branch is exactly.
-                branches.add(branch);
+                branchNames.add(branch.replace("  origin/", "").replace("\n",""));
             }
         }
-        return branches;
+        return branchNames;
     }
 }
