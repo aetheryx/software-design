@@ -47,8 +47,8 @@ public class Application {
     /**
      * The run method is our main function, it's responsible for deciding what to do.
      * <p>
-     *     The run method calls <a href=#@link>{@link Repository#Repository(String)}</a> when the user has not yet
-     *     cloned a repository, and TODO when the user has cloned a repository.
+     *     The run method initialises <a href=#@link>{@link Repository#Repository(String)}</a> when the user has not yet
+     *     cloned a repository, and then hands over control to the command framework by calling {@link CommandFramework#startCommandLoop()}.
      * </p>
      * @author Joachim, Zain
      */

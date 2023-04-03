@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * todo @joachim
+ * Represents the "Most Active Branch" statistic.
  * @author Joachim
  */
 public class BranchStatistic extends Statistic {

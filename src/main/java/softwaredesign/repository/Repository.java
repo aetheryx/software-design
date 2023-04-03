@@ -55,13 +55,14 @@ public class Repository {
         public Branch(String newBranchName){
             branchName = newBranchName;
         }
+
         /**
          * @return a string containing the name of the branch this <a href="#@link">{@link Branch}</a> represents inside
          * the GitHub repository
          * @author Joachim
          */
         public String getName(){
-            return "";
+            return branchName
         }
 
         /**
