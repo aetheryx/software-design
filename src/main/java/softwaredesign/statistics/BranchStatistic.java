@@ -40,7 +40,7 @@ public class BranchStatistic extends Statistic {
                     commitsInBranches.compute(commit.getBranch(), (k, v) -> v + 1);
                 }
 
-                progressBar.setProgress((i / branchNames.size()) * 100);
+                progressBar.setProgress((i * 100) / branchNames.size());
             }
 
             progressBar.finish();
