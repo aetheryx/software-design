@@ -58,7 +58,7 @@ public class HelpCommand extends Command {
                             command.getDescription(),
                             command.getName(),
                             command.getUsage()
-                    ) // https://github.com/mhzyali/co-labs
+                    )
             );
 
             String examples = command.getExamples();
