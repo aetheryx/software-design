@@ -290,7 +290,7 @@ public class Repository {
      *               the default branch will be switched to.
      * @author Joachim
      * */
-    @SuppressWarnings("java:S3824") //check line 295
+    @SuppressWarnings("java:S3824") //check line 301
     public void switchActiveBranch(String branch) throws IOException, InterruptedException, IllegalArgumentException {
         //if the branch has not already been examined by the user before, make a new one, else switch to the stored branch
         String checkoutCommand = "git checkout " + branch;
@@ -299,15 +299,14 @@ public class Repository {
             getGitCommandOutput(checkoutCommand, repositoryRoot);
 
             //Sonarlint complains about the following line telling me that I should use computeIfAbsent, we cannot use
-            //this due to anonymous functions not being allowed to throw errors that processGitLog() thows.
+            //this due to anonymous functions not being allowed to throw errors that processGitLog() throws.
             if (!branches.containsKey(branch)) {
                 branches.put(branch, new Branch(branch));
                 branches.get(branch).processGitLog(this);
             }
             activeBranch = getCurrentBranchName();
-        }
-        else {
-            throw new IllegalArgumentException("no branch exists with this name");
+        } else {
+            throw new IllegalArgumentException("No branch exists with this name.");
         }
     }
 

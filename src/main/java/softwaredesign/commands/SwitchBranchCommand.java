@@ -18,6 +18,9 @@ import java.util.Map;
  */
 
 public class SwitchBranchCommand extends Command {
+    public SwitchBranchCommand() {
+        this.argumentParser.addRequiredArgument("branch", null);    // Add the required "branch" argument, which can be any string
+    }
 
     /**
      * This method switches the active branch from the repository module. If the branch is unavailable
@@ -26,13 +29,19 @@ public class SwitchBranchCommand extends Command {
      * */
     @Override
     public void run(Map<String, String> arguments) throws UserFacingException {
+        String branchArgument = arguments.get("branch");
         try {
-            getRepository().switchActiveBranch(arguments.get("branch"));
-        } catch (IOException | InterruptedException e) {
+            getRepository().switchActiveBranch(branchArgument);
+            softwaredesign.ui.TerminalIO.write("switched active branch to: " + branchArgument + "\n");
+        } catch (IOException e) {
             throw new UserFacingException("branch unavailable: " + e.getMessage() + "\n");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new UserFacingException("interrupted" + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new UserFacingException(e.getMessage()); // switchActiveBranch throws for invalid branch names
         }
     }
-
     @Override
     public String getName() {
         return "switch-branch";
