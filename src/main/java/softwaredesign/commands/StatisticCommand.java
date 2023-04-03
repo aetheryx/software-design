@@ -14,6 +14,11 @@ import java.util.Set;
  * @author Zain
  */
 public class StatisticCommand extends Command {
+    @Override
+    public String getName() {
+        return "statistic";
+    }
+
     private final StatisticFramework statisticFramework = StatisticFramework.getInstance();
 
     public StatisticCommand() {
@@ -32,20 +37,13 @@ public class StatisticCommand extends Command {
     }
 
     @Override
-    public String getName() {
-        return "statistic";
-    }
-
-    @Override
     public String getDescription() {
         return "Allows you to view various statistics of the Git repository.";
     }
 
     @Override
     public String getExamples() {
-        return "statistic --name=contributors\n" +
-                "statistic --name=contributors --sort-by=loc\n" +
-                "statistic --name=weekdays --sort-by=commits\n" +
-                "statistic --name=issues";
+        return "statistic --name=contributors, " +
+                "statistic --name=weekdays --sort-by=loc";
     }
 }

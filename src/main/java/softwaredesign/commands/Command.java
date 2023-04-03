@@ -101,9 +101,11 @@ public abstract class Command implements Framework.Module {
     /**
      * Examples of arguments for this command. Displayed to the user in the help command.
      *
-     * @return Newline-delimited list of examples for this command
+     * @return Comma-delimited list of examples for this command
      */
-    public abstract String getExamples();
+    public String getExamples() {
+        return null;
+    }
 }
 
 

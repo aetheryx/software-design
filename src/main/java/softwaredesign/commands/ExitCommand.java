@@ -3,7 +3,12 @@ package softwaredesign.commands;
 import softwaredesign.ui.TerminalIO;
 
 import java.util.Map;
-
+/**
+ * This class is going to initiate the deletion of the locally copied repository, and exits the program.
+ * This class follows the structure of the <a href="#@link">{@link Command}</a> fitting
+ * inside the <a href="#@link">{@link CommandFramework}</a>.
+ * @author Zain
+ */
 public class ExitCommand extends Command {
     @Override
     public String getName() {
@@ -29,14 +34,6 @@ public class ExitCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Allows you to view various statistics of the Git repository.";
-    }
-
-    @Override
-    public String getExamples() {
-        return "statistic --name=contributors\n" +
-                "statistic --name=contributors --sort-by=loc\n" +
-                "statistic --name=weekdays --sort-by=commits\n" +
-                "statistic --name=issues";
+        return "Exits the application.";
     }
 }

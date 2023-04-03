@@ -20,11 +20,32 @@ public class ArgumentParser {
     private final Map<String, Set<String>> requiredArguments = new HashMap<>();
     private final Map<String, Set<String>> optionalArguments = new HashMap<>();
 
+    /**
+     * <p>
+     *     this method should be called when constructing your command, to add generic arguments and argument checking.
+     *     The parsing fails if arguments added by this method are not present in the arguments, making them required.
+     * </p>
+     * @param name the name of the argument (without dashes e.g "branch" would used like --branch=[branch name])
+     * @param values the possibilities of values the argument can have. If the argument given by the user is not in this
+     *               list, parsing fails, forcing the user to input one of those arguments. Leave null if the argument
+     *               should be open.
+     */
     public ArgumentParser addRequiredArgument(String name, Set<String> values) {
         this.requiredArguments.put(name, values);
         return this;
     }
 
+    /**
+     * <p>
+     *     this method should be called when constructing your command, to add generic arguments and argument checking.
+     *     The parsing does not fail if arguments added by this method are not present in the arguments, making
+     *     them optional.
+     * </p>
+     * @param name the name of the argument (without dashes e.g "branch" would used like --branch=[branch name])
+     * @param values the possibilities of values the argument can have. If the argument given by the user is not in this
+     *               list, parsing fails, forcing the user to input one of those arguments. Leave null if the argument
+     *               should be open.
+     */
     public ArgumentParser addOptionalArgument(String name, Set<String> values) {
         this.optionalArguments.put(name, values);
         return this;

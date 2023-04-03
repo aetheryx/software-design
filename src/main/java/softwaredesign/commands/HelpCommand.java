@@ -21,9 +21,9 @@ public class HelpCommand extends Command {
 
     @Override
     public String getExamples() {
-        return "help\n" +
-                "help --command=statistic\n" +
-                "help --command=delete-repository";
+        return "help, " +
+                "help --command=statistic, " +
+                "help --command=delete";
     }
 
     private CommandFramework commandFramework;
@@ -47,10 +47,27 @@ public class HelpCommand extends Command {
     }
 
     private String listCommands() {
-        StringBuilder sb = new StringBuilder("List of commands:\n");
+        StringBuilder sb = new StringBuilder();
+
         for (String commandName : commandFramework.getModuleNames()) {
             Command command = commandFramework.getModule(commandName);
-            sb.append(String.format("  - %s - %s%n", command.getName(), command.getDescription()));
+            sb.append(
+                    String.format(
+                            "Command \"%s\"%n    - Description: %s%n    - Usage: %s %s",
+                            command.getName(),
+                            command.getDescription(),
+                            command.getName(),
+                            command.getUsage()
+                    )
+            );
+
+            String examples = command.getExamples();
+            if (examples != null) {
+                sb.append("\n    - Examples: ");
+                sb.append(examples);
+            }
+
+            sb.append("\n\n");
         }
 
         return sb.toString();
