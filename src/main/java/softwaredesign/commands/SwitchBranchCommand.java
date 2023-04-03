@@ -37,7 +37,7 @@ public class SwitchBranchCommand extends Command {
         String branchArgument = arguments.get("branch");
         try {
             getRepository().switchActiveBranch(branchArgument);
-            softwaredesign.ui.TerminalIO.write("switched active branch to: " + branchArgument + "\n");
+            softwaredesign.ui.TerminalIO.write("Switched active branch to: " + branchArgument + "\n");
         } catch (IOException e) {
             throw new UserFacingException("branch unavailable: " + e.getMessage() + "\n");
         } catch (InterruptedException e) {
