@@ -96,16 +96,12 @@ public class Repository {
                 String[] commitChanges = unparsedCommitLines[unparsedCommitLines.length - 1].split(", ");
                 for (String change : commitChanges) {
                     String number = change.split(" ")[0];
-                    try {
-                        if (change.contains("-")){
-                            //deletion
-                            commitNumberOfLineDeletions = Integer.parseInt(number);
-                        } else if (change.contains("+")) {
-                            //addition
-                            commitNumberOfLineAdditions = Integer.parseInt(number);
-                        }
-                    } catch (Exception e) {
-                        // TODO
+                    if (change.contains("-")){
+                        //deletion
+                        commitNumberOfLineDeletions = Integer.parseInt(number);
+                    } else if (change.contains("+")) {
+                        //addition
+                        commitNumberOfLineAdditions = Integer.parseInt(number);
                     }
                 }
             }
