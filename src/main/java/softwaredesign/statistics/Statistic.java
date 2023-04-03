@@ -52,6 +52,13 @@ public abstract class Statistic implements Framework.Module {
             } catch (IllegalArgumentException e) {
                 throw new UserFacingException("The `--sort-by` argument must take a valid column name, and the values in this column must be integers.");
             }
+        } else {
+            // sort by "commits" column by default
+            try {
+                table.sort("commits");
+            } catch (IllegalArgumentException e) {
+                // ignore, table doesn't have a "commits" column
+            }
         }
 
         TerminalIO.write(table.toString());
