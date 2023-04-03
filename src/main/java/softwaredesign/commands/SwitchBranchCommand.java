@@ -40,7 +40,7 @@ public class SwitchBranchCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "switches the active branch to calculate statistics on a different branch";
+        return "Switches the active branch to calculate statistics on a different branch";
     }
 
     @Override

@@ -126,10 +126,12 @@ public class Table {
     }
 
     public void sort(String headerField) {
-        int index = this.headers.indexOf(headerField);
-        if (index == -1) {
+        Optional<String> header = this.headers.stream().filter(i -> i.equalsIgnoreCase(headerField)).findFirst();
+        if (header.isEmpty()) {
             throw new IllegalArgumentException("Header field not found in this table's headers");
         }
+
+        int index = this.headers.indexOf(header.get());
 
         this.values.sort((a, b) -> {
             var valA = a.get(index);

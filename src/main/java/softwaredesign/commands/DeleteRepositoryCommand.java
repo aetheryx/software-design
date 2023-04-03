@@ -26,7 +26,7 @@ public class DeleteRepositoryCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "deletes the repository files from disk, and returns you to the repository cloning phase";
+        return "Deletes the repository files from disk, and returns you to the repository cloning phase";
     }
 
     @Override

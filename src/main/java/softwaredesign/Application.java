@@ -73,7 +73,7 @@ public class Application {
         repository = null;
         while (repository == null) {
             try {
-                repository = new Repository(TerminalIO.prompt("please enter the github URL of the repository you would like to investigate: "));
+                repository = new Repository(TerminalIO.prompt("Please enter the github URL of the repository you would like to investigate: "));
             } catch (IOException | InterruptedException e) {
                 TerminalIO.write("git repository unavailable: " + e.getMessage() + "\n");
             }
