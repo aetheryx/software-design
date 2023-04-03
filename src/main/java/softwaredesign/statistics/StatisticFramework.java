@@ -22,7 +22,7 @@ public class StatisticFramework extends Framework<Statistic> {
 
     private StatisticFramework() {}
 
-    public StatisticFramework registerStatisticModules() {
+    private StatisticFramework registerStatisticModules() {
         this
                 .register(new BranchStatistic())
                 .register(new ContributorStatistic())

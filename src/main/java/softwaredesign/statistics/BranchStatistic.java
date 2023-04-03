@@ -13,7 +13,7 @@ import java.util.Map;
  * todo @joachim
  * @author Joachim
  */
-public class BranchStatistic extends GitStatistic {
+public class BranchStatistic extends Statistic {
     @Override
     public String getName() {
         return "branches";

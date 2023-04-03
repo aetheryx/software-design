@@ -35,7 +35,7 @@ public class CommandFramework extends Framework<Command> {
         }
     }
 
-    public void exitCommandLoop() {
+    public void stopCommandLoop() {
         this.commandLoopActive = false;
     }
 

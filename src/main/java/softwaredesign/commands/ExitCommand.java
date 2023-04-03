@@ -23,7 +23,7 @@ public class ExitCommand extends Command {
             TerminalIO.write("Something went wrong while cleaning up the repository files. You may need to remove the repository from your dick manually.\n\n");
         }
 
-        this.commandFramework.exitCommandLoop();
+        this.commandFramework.stopCommandLoop();
         TerminalIO.write("Goodbye!");
     }
 
