@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * The returned table has <tt>Commits</tt> and <tt>LOC</tt> column headers, which can be sorted by.
  * The sorting logic is taken care of by {@link Statistic#execute(Map)}.
  */
-public class WeekdayStatistic extends GitStatistic {
+public class WeekdayStatistic extends Statistic {
     @Override
     public String getName() {
         return "weekdays";
